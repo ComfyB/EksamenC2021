@@ -2,30 +2,29 @@
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
-int toDecimal(char *hex){
+int toDecimal(char *in){
     int i,value, length;
     long decimal = 0, base = 1;
-    length = strlen(hex);
-    printf("i funksjonen to decimal");
+    length = strlen(in);
+   //printf("i funksjonen to decimal");
   for(i= length--; i>=0; i--){
-      if(hex[i]>='0' && hex[i]<= '9'){
-          decimal+=(hex[i]-48)*base;
+      if(in[i]>='0' && in[i]<= '9'){
+          decimal+=(in[i]-48)*base;
           base *= 16;
-      }else if(hex[i]>='A'&& hex[i]<='F'){
-          decimal += (hex[i]-55)*base;
+      }else if(in[i]>='A'&& in[i]<='F'){
+          decimal += (in[i]-55)*base;
           base *=16;
-      }else if(hex[i]>='a' && hex[i]<= 'f'){
-          decimal+=(hex[i]-87)*base;
+      }else if(in[i]>='a' && in[i]<= 'f'){
+          decimal+=(in[i]-87)*base;
           base*=16;
       }
   }
   return decimal;
 }
 int main(){
-    char ch, ch2;
-    char* str[2];
+    char* ch, ch2;
     int decimal;
-    
+    //tests
     //åpne filer for input/output
     FILE *fptrIn = fopen("hexdec.txt", "r");
     FILE *fptrOut = fopen("toascii.txt", "w");
@@ -37,12 +36,13 @@ int main(){
     }
     //while to read through file.
     while ((ch=fgetc(fptrIn)) != EOF){
+        
         ch2= fgetc(fptrIn);
-        str= ''
-        strncat(str,&ch,1);
-        strncat(str,&ch2,1);
-        printf("%lld",toDecimal(str));
+        strncat(&ch,&ch2,1);
+        printf("%c",toDecimal(&ch));
 
+        //write to output stream
+        fputc(toDecimal(&ch), fptrOut);
     }
     fclose(fptrIn);
     fclose(fptrOut);
