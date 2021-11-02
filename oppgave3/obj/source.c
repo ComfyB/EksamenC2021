@@ -78,7 +78,7 @@ return 0;
 
 
 void queue(Node **pheadNode, char* navn, float pris, int antall){
-    struct Node *newNode;    
+    Node *newNode;    
     newNode = malloc(sizeof*newNode);
     Node *i = *pheadNode;
     newNode->VARENAVN = navn;
@@ -88,9 +88,11 @@ void queue(Node **pheadNode, char* navn, float pris, int antall){
             newNode->PREV = NULL;
             newNode->NEXT = NULL;
             *pheadNode = newNode;
+            printf("%f",newNode->PRIS);
+
             return;
         } 
-    printf("%f",&newNode->PRIS);
+    printf("%f",newNode->PRIS);
     main();
 } //add a node to the end of the list
 void printList(Node **pheadNode){
