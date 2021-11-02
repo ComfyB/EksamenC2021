@@ -23,16 +23,19 @@ være å avslutte).
 */
 
 typedef struct Node{
-    char* VARENAVN[20];
+    char* VARENAVN;
     int ANTALL;
     float PRIS;
     struct Node* NEXT;
     struct Node* PREV;
 }Node;
-void push(Node **pheadNode);
-void pop(Node **pheadNode, int ant, float pris);
-void ctrlZ();
-void delVare();
+void queue(Node **pheadNode, char* navn, float pris, int antall); //add a node to the end of the list
+void printList(Node **pheadNode); //print all nodes into terminal
+void deQueue(); //delete last added node
+void searchAndDelete(); //delete all nodes with name "*Input*"
+int sum(Node **pheadNode); //sum pris på alle varer i listen
+
+//void pop(Node **pheadNode, int ant, float pris);
 
 int main(){
     Node *phead = NULL;
@@ -40,19 +43,31 @@ int main(){
         printf("Menu\n");
         printf("Write a number then confirm selection with enter\n");
 
-        printf("1. push Node\n");
-        printf("2. Delete last added element\n");
-        printf("3. Delete any VARE with name: \n");
-        printf("4. get the price of all VARE with naem: \n");
-        printf("5. print the lis\n");
+        printf("1. Legg til vare i slutten av listen:\n");
+        printf("2. Slett forrige/ angre forrige element\n");
+        printf("3. Fjern alle varer med navn fra listen: \n");
+        printf("4. Sum av alle varer: \n");
+        printf("5. Kvittering\n");
         printf("6. Exit program\n");
         scanf("%i", &choice);
             switch (choice){
                 case 1:
-                    push(&phead);
+                    queue(&phead, "Navn", 2.3, 3);
                     break;
                 case 2:
-                    ctrlZ();
+                    deQueue();
+                    break;                
+                case 3:
+                    searchAndDelete();
+                    break;
+                case 4:
+                    sum(&phead);
+                    break;
+                case 5:
+                    printList(&phead);
+                    break;
+                case 6:
+                    cleanUpAndExit();
                     break;
                 default:
                     printf("not a valid option");
@@ -61,11 +76,45 @@ return 0;
 }
 
 
-void push(Node **pheadNode){
+
+void queue(Node **pheadNode, char* navn, float pris, int antall){
+    struct Node *newNode;
+
+    
+    newNode = malloc(sizeof*newNode);
+    Node *i = *pheadNode;
+    newNode->VARENAVN = navn;
+    newNode->PRIS = pris;
+    newNode->ANTALL = antall;
+        if(*pheadNode == NULL){
+            newNode->PREV = NULL;
+            newNode->NEXT = NULL;
+            *pheadNode = newNode;
+            return;
+        } 
+    printf("%d",newNode->PRIS);
+    main();
+} //add a node to the end of the list
+void printList(Node **pheadNode){
     printf("hei\n");
     main();
-};
+} //print all nodes into terminal
+void deQueue(){
+    printf("hei\n");
+    main();
+} //delete last added node
+void delVare(){
+    printf("hei\n");
+    main();
+} //delete all nodes with name "*Input*"
+int sum(Node **pheadNode){
+    printf("hei\n");
+    main();
+} //sum pris på alle varer i listen
+void searchAndDelete(){
 
-void pop(Node **pheadNode, int ant, float pris){};
-void ctrlZ(){};
-void delVare(){};
+}
+void cleanUpAndExit(){
+   // free();
+    exit(0);
+}
