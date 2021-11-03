@@ -36,19 +36,13 @@ void queue(Node **pheadNode, char* navn, float pris, int antall); //add a node t
 void printList(Node **pheadNode); //print all nodes into terminal
 void deQueue(Node **pheadNode); //delete last added node
 void searchAndDelete(Node **pheadNode); //delete all nodes with name "*Input*"
-int sum(Node **pheadNode); //sum pris på alle varer i listen
+float sum(Node **pheadNode); //sum pris på alle varer i listen
 void menu(Node *pheadNode);
 void handleInput(Node **pheadNode);
 void cleanUpAndExit(Node **pheadNode);
 
 int main(){
     Node *pheadNode = NULL;
-    queue(&pheadNode, "ole", 2, 3);
-    queue(&pheadNode, "per", 2, 3);
-    queue(&pheadNode, "katt", 2, 3);
-    queue(&pheadNode, "fisk", 2, 3);
-    queue(&pheadNode, "lisa", 2, 3);
-
     menu(pheadNode);
 return 0;
 }
@@ -93,18 +87,21 @@ void menu(Node *pheadNode){
 
 
 void handleInput(Node **pheadNode){
-char * navn = malloc(sizeof(char)*25);
-float pris;
-int antall;
-printf("\n*********************\n");
-printf("Oppgi et varenavn og trykk enter:  ");
-scanf("%s", navn);
-printf("\nOppgi en pris og trykk enter:  ");
-scanf("%f",&pris);
-printf("\nOppgi antall varer og trykk enter:  ");
-scanf("%d",&antall);
-printf("\n");
-queue(pheadNode, navn, pris, antall);
+
+    char * navn = malloc(sizeof(char)*25);
+    float pris;
+    int antall;
+
+    printf("\n*********************\n");
+    printf("Oppgi et varenavn og trykk enter:  ");
+    scanf("%s", navn);
+    printf("\nOppgi en pris og trykk enter:  ");
+    scanf("%f",&pris);
+    printf("\nOppgi antall varer og trykk enter:  ");
+    scanf("%d",&antall);
+    printf("\n");
+
+    queue(pheadNode, navn, pris, antall);
 }
 
 
@@ -141,17 +138,26 @@ void queue(Node **pheadNode, char* navn, float pris, int antall){
 void printList(Node **pheadNode){
     Node *i;
     for (i = *pheadNode; i != NULL; i = i->NEXT){
-    printf("\n*********************\n");
-    printf("navn: %s\n", *i->VARENAVN);
-    printf("pris: %f\n", i->PRIS); 
-    printf("antall: %d\n", i->ANTALL); 
-    printf("\n*********************\n");
+        printf("\n*********************\n");
+        printf("navn: %s\n", *i->VARENAVN);
+        printf("pris: %.2f\n", i->PRIS); 
+        printf("antall: %d\n", i->ANTALL); 
+  //  printf("\n*********************\n");
     }
-   menu(*pheadNode);
-   } //print all nodes into terminal
+printf("\n*********************\n");
+printf("TotalSummen = %f",sum(pheadNode));
+menu(*pheadNode);
+} //print all nodes into terminal
    
 void deQueue(Node **pheadNode){
+ 
     Node *i=*pheadNode;
+       if(i->NEXT==NULL){
+           *pheadNode=i->NEXT;
+           menu(*pheadNode);
+           free(i);
+           return;
+       }
     while(i->NEXT!= NULL) i = i->NEXT;
     i->PREV->NEXT = NULL;
     free(i);
@@ -159,64 +165,52 @@ void deQueue(Node **pheadNode){
 } //delete last added node
 
 void searchAndDelete(Node **pheadNode){
-    char * searchTerm =malloc(sizeof(char)*25);
+    char * searchTerm = malloc(sizeof(char)*25);
     printf("\nSkriv navnet på det du ønsker å slette: \n");
     scanf("%s", searchTerm);
      // Store head node
-    Node *i = *pheadNode, *prev;
+    Node *i = *pheadNode, *prev; //node i = temporary
  
-    // If head node itself holds the key to be deleted
-    if (i != NULL && i->VARENAVN == searchTerm) {
+    // if head has the searchterm it gets deleted
+    if (i != NULL && (strcmp(*i->VARENAVN, searchTerm))==0) {
         printf("deleted headnode\n");
-        *pheadNode = i->NEXT; // Changed head
-        free(i); // free old head
+        *pheadNode = i->NEXT; // new head from temp i head
+        free(i); // memfree old head
         menu(*pheadNode);
     }
  
-    // Search for the key to be deleted, keep track of the
-    // previous node as we need to change 'prev->next'
-    while (i != NULL && i->VARENAVN != searchTerm) {
+    // Search for the values to be deleted,
+    // save previous so we can set prev ->next
+    while (i != NULL && (strcmp(*i->VARENAVN, searchTerm))!=0){
         printf("next node\n");
-
         prev = i;
         i = i->NEXT;
     }
-    if(i!=NULL && i->VARENAVN==searchTerm){
-        // Unlink the node from linked list
+    if(i!=NULL && (strcmp(*i->VARENAVN,searchTerm))==0){
+        // Udelete node
     prev->NEXT = i->NEXT;
-    free(i);
     }
-    // If key was not present in linked list
+    // Key not found error
     if (i == NULL)
         printf(" keynot found\n");
-        
- 
  
  
     free(i); // Free memory
     menu(*pheadNode);
 
-    /* Node *i = *pheadNode;
-    while(i->NEXT != NULL){
-        if(i->VARENAVN == &searchTerm){//delete i
-            i->NEXT= i->PREV->NEXT;
-            i->PREV= i->NEXT->PREV;
-        }
-         i = i->NEXT;
-         }
-         if(i->NEXT ==NULL && i->VARENAVN==&searchTerm){//checks if null recursive with dequeue, if its only element dqueue handle
-             deQueue(pheadNode);
-         }
-        
+} //delete all nodes with name "*Input*"
+
+float sum(Node **pheadNode){
+    float sum;
+    Node *i;
+    for (i = *pheadNode; i != NULL; i = i->NEXT){
+        sum+=i->PRIS*i->ANTALL;
     
-    free(i);  */
+    }
+    printf("%f",sum);
     menu(*pheadNode);
 
-} //delete all nodes with name "*Input*"
-int sum(Node **pheadNode){
-    printf("hei\n");
-    main();
-    return 0;
+    return sum;
 } //sum pris på alle varer i listen
 
 

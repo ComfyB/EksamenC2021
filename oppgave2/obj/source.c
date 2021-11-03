@@ -1,13 +1,12 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <math.h>
 #include <string.h>
 int toDecimal(char *in){
-    int i,value, length;
+    int i, length;
     long decimal = 0, base = 1;
     length = strlen(in);
    //printf("i funksjonen to decimal");
-  for(i= length--; i>=0; i--){
+  for(i= length; i>=0; i--){
       if(in[i]>='0' && in[i]<= '9'){
           decimal+=(in[i]-48)*base;
           base *= 16;
@@ -23,9 +22,8 @@ int toDecimal(char *in){
 }
 int main(){
     char* ch, ch2;
-    int decimal;
-    //tests
-    //åpne filer for input/output
+
+   //åpne filer for input/output
     FILE *fptrIn = fopen("hexdec.txt", "r");
     FILE *fptrOut = fopen("toascii.txt", "w");
 
