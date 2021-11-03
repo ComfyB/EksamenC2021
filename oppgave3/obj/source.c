@@ -166,42 +166,63 @@ void deQueue(Node **pheadNode){
 
 void searchAndDelete(Node **pheadNode){
     char * searchTerm = malloc(sizeof(char)*25);
+    
     printf("\nSkriv navnet på det du ønsker å slette: \n");
     scanf("%s", searchTerm);
      // Store head node
-    Node *i = *pheadNode, *prev; //node i = temporary
- 
-    // if head has the searchterm it gets deleted
-    if (i != NULL && (strcmp(*i->VARENAVN, searchTerm))==0) {
-        printf("deleted headnode\n");
-        *pheadNode = i->NEXT; // new head from temp i head
-        free(i); // memfree old head
-        menu(*pheadNode);
+    Node *i = *pheadNode, *prev = NULL; //node i = temporary
+
+    while(i){
+        Node *next = i->NEXT;
+
+        if(strcmp(*i->VARENAVN, searchTerm)==0){
+            if(i->PREV != NULL){
+                i->PREV = next->PREV;
+                }
+            free(i);
+            if(prev){
+                prev->NEXT = next;
+            }else{
+                *pheadNode = next;
+            }
+        }else{
+            prev = i;
+        }
+        i=next;
     }
- 
-    // Search for the values to be deleted,
+     menu(*pheadNode);
+
+
+   /* 
+    
+    if (i != NULL && (strcmp(*i->VARENAVN, searchTerm))==0) {   // if head has the searchterm it gets deleted
+        //printf("\ndeleted headnode\n");
+        *pheadNode = i->NEXT; // new head from temp i head
+        i=*pheadNode;
+    }else if(i != NULL && (strcmp(*i->VARENAVN, searchTerm))!=0){
+        //printf("\next node\n");
     // save previous so we can set prev ->next
-    while (i != NULL && (strcmp(*i->VARENAVN, searchTerm))!=0){
-        printf("next node\n");
         prev = i;
         i = i->NEXT;
-    }
-    if(i!=NULL && (strcmp(*i->VARENAVN,searchTerm))==0){
-        // Udelete node
-    prev->NEXT = i->NEXT;
-    }
+    // Search for the values to be deleted,
+    }else if(i != NULL &&(strcmp(*i->VARENAVN,searchTerm))==0){
+        // delete node
+        prev->NEXT = i->NEXT;
+        prev->NEXT->PREV= prev;
+        }
+
     // Key not found error
     if (i == NULL)
         printf(" keynot found\n");
  
  
     free(i); // Free memory
-    menu(*pheadNode);
+    menu(*pheadNode); */
 
 } //delete all nodes with name "*Input*"
 
 float sum(Node **pheadNode){
-    float sum;
+    float sum = 0;
     Node *i;
     for (i = *pheadNode; i != NULL; i = i->NEXT){
         sum+=i->PRIS*i->ANTALL;
@@ -215,6 +236,6 @@ float sum(Node **pheadNode){
 
 
 void cleanUpAndExit(Node **pheadNode){
-   // free();
+   // free();  maybe while(pheadnode!= NULL recursive delete?)
     exit(0);
 }
