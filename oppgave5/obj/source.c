@@ -50,12 +50,12 @@ void *workThread(void *structPointer){
     fprintf(outPut, "%s", *Buffer->input);
     fclose(outPut);
     pthread_mutex_trylock(&lock_x);
-    pthread_cond_wait(&shared_x,&lock_x);
+    pthread_cond_wait(&shared_x,&lock_x);//kjører whileloopeb når den får signal
     pthread_mutex_unlock(&lock_x);
     }
-     printf("\nsaved file\n");
-     printf("escape_i worth\n");
-     pthread_mutex_unlock(&lock_x);
+    printf("\nsaved file\n");
+    printf("escape_i worth\n");
+    pthread_mutex_unlock(&lock_x);
     pthread_exit(NULL) ;
 }
 
@@ -69,9 +69,9 @@ int main(){
    // pthread_attr_setdetachstate(&attr,PTHREAD_CREATE_JOINABLE);
     pthread_create(&thread_1, NULL, workThread, &Buffer);
     while(strncmp((char*)Buffer->input,"quit",4)){
-        fgets((char*)Buffer->input,10,stdin);
-        
-        pthread_cond_signal(&shared_x);
+        fgets((char*)Buffer->input,10,stdin);//take input
+
+        pthread_cond_signal(&shared_x);//sender signal for å kjøre while loopen en gang
         printf("Thread_Main_Id: %d\n",syscall(SYS_gettid));
             //scanf("%s", &Buffer->input);
             //printf("\n%s\n",Buffer->input);
