@@ -2,7 +2,7 @@
 
 INCLDIR = ./include
 CC = gcc
-CFLAGS = -O2
+CFLAGS = -O2 -lsocket
 CFLAGS += -I $(INCLDIR)
 
 OBJDIR = obj
@@ -17,7 +17,7 @@ $(OBJDIR)/%.o: %.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
 SOURCE: $(OBJS)
-	$(CC) -o $@ $^ $(CFLAGS) -pthread
+	$(CC) -o $@ $^ $(CFLAGS)
 
 .PHONY: clean
 clean: 

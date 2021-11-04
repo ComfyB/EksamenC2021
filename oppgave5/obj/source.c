@@ -28,37 +28,61 @@ hver tekststreng skal appendes (legges til på slutten) filen.
 #include <stdlib.h>
 #include <pthread.h>
 #include <string.h>
+#include <syscall.h>
 
 typedef struct Buffer{
     char* input[11];
 
 }Buffer;
 
-
+pthread_cond_t shared_x;
+pthread_mutex_t lock_x;
 
 void *workThread(void *structPointer){
-    Buffer *Buffer = (struct Buffer*)structPointer;
-    
+   // printf("inne i workth");
+   
+    Buffer *Buffer = structPointer;
+
+    while(strncmp((char*)Buffer->input,"quit",4)){
+    //printf("inniWktWhile");
     FILE *outPut = fopen("outPut.txt","a");
-    
+    printf("Thread_1_Id: %d\n",syscall(SYS_gettid));
     fprintf(outPut, "%s", *Buffer->input);
     fclose(outPut);
-    return NULL;
+    pthread_mutex_trylock(&lock_x);
+    pthread_cond_wait(&shared_x,&lock_x);
+    pthread_mutex_unlock(&lock_x);
+    }
+     printf("\nsaved file\n");
+     printf("escape_i worth\n");
+     pthread_mutex_unlock(&lock_x);
+    pthread_exit(NULL) ;
 }
 
 int main(){
+    pthread_mutex_init(&lock_x,NULL);
+    pthread_cond_init(&shared_x,NULL);
     Buffer *Buffer = malloc(sizeof(Buffer));
-    pthread_t thread_id;
-
-    pthread_create(&thread_id, NULL, workThread, &Buffer);
-
+    pthread_t thread_1;
+    //pthread_attr_t attr;
+    printf("ThreadId: %d",syscall(SYS_gettid));
+   // pthread_attr_setdetachstate(&attr,PTHREAD_CREATE_JOINABLE);
+    pthread_create(&thread_1, NULL, workThread, &Buffer);
     while(strncmp((char*)Buffer->input,"quit",4)){
-        workThread(&Buffer);
         fgets((char*)Buffer->input,10,stdin);
+        
+        pthread_cond_signal(&shared_x);
+        printf("Thread_Main_Id: %d\n",syscall(SYS_gettid));
             //scanf("%s", &Buffer->input);
             //printf("\n%s\n",Buffer->input);
     }
-    pthread_join(thread_id, NULL);
+
+    //##########THIS NEED CLEANUP!!!!!###########
+     //pthread_mutex_unlock(&lock_x);
+    //pthread_cond_signal(&shared_x);
+   // pthread_exit("NULL");
+    printf("left both while loops:)");
+   // pthread_join(thread_1, NULL); 
     free(Buffer);
     
     return 0;
