@@ -52,9 +52,9 @@ int main(){
 
     pthread_create(&thread_id, NULL, workThread, &Buffer);
 
-    while(strncmp((char*)Buffer->input,"quit",4)){
+    while(strncmp(&Buffer->input,"quit",4)){
         workThread(&Buffer);
-        fgets((char*)Buffer->input,10,stdin);
+        fgets(Buffer->input,10,stdin);
             //scanf("%s", &Buffer->input);
             //printf("\n%s\n",Buffer->input);
     }
