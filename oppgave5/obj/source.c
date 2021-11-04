@@ -32,7 +32,6 @@ hver tekststreng skal appendes (legges til på slutten) filen.
 
 typedef struct Buffer{
     char* input[11];
-
 }Buffer;
 
 pthread_cond_t shared_x;
@@ -45,13 +44,13 @@ void *workThread(void *structPointer){
 
     while(strncmp((char*)Buffer->input,"quit",4)){
     //printf("inniWktWhile");
-    FILE *outPut = fopen("outPut.txt","a");
-    printf("Thread_1_Id: %d\n",syscall(SYS_gettid));
-    fprintf(outPut, "%s", *Buffer->input);
-    fclose(outPut);
-    pthread_mutex_trylock(&lock_x);
-    pthread_cond_wait(&shared_x,&lock_x);//kjører whileloopeb når den får signal
-    pthread_mutex_unlock(&lock_x);
+        FILE *outPut = fopen("outPut.txt","a");
+        printf("Thread_1_Id: %d\n",syscall(SYS_gettid));
+        fprintf(outPut, "%s", *Buffer->input);
+        fclose(outPut);
+        pthread_mutex_trylock(&lock_x);
+        pthread_cond_wait(&shared_x,&lock_x);//kjører whileloopeb når den får signal
+        pthread_mutex_unlock(&lock_x);
     }
     printf("\nsaved file\n");
     printf("escape_i worth\n");

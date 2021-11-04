@@ -1,25 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-int toDecimal(char *in){
-    int i, length;
-    long decimal = 0, base = 1;
-    length = strlen(in);
-   //printf("i funksjonen to decimal");
-  for(i= length; i>=0; i--){
-      if(in[i]>='0' && in[i]<= '9'){
-          decimal+=(in[i]-48)*base;
-          base *= 16;
-      }else if(in[i]>='A'&& in[i]<='F'){
-          decimal += (in[i]-55)*base;
-          base *=16;
-      }else if(in[i]>='a' && in[i]<= 'f'){
-          decimal+=(in[i]-87)*base;
-          base*=16;
-      }
-  }
-  return decimal;
-}
+int toDecimal(char *in);
+
 int main(){
     char* ch, ch2;
 
@@ -45,4 +28,24 @@ int main(){
     fclose(fptrIn);
     fclose(fptrOut);
 return 0;
+}
+
+int toDecimal(char *in){
+    int i, length;
+    long decimal = 0, base = 1;
+    length = strlen(in);
+   //printf("i funksjonen to decimal");
+  for(i= length; i>=0; i--){
+      if(in[i]>='0' && in[i]<= '9'){
+          decimal+=(in[i]-48)*base;
+          base *= 16;
+      }else if(in[i]>='A'&& in[i]<='F'){
+          decimal += (in[i]-55)*base;
+          base *=16;
+      }else if(in[i]>='a' && in[i]<= 'f'){
+          decimal+=(in[i]-87)*base;
+          base*=16;
+      }
+  }
+  return decimal;
 }

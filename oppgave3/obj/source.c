@@ -168,16 +168,19 @@ void searchAndDelete(Node **pheadNode){
     char * searchTerm = malloc(sizeof(char)*25);
     
     printf("\nSkriv navnet på det du ønsker å slette: \n");
+//trenger input validering! ! ! ! 
     scanf("%s", searchTerm);
      // Store head node
     Node *i = *pheadNode, *prev = NULL; //node i = temporary
 
     while(i){
-        Node *next = i->NEXT;
+        Node *next = i->NEXT; //i er her head -- next er no2
+                            
 
         if(strcmp(*i->VARENAVN, searchTerm)==0){
             if(i->PREV != NULL){
                 i->PREV = next->PREV;
+                
                 }
             free(i);
             if(prev){

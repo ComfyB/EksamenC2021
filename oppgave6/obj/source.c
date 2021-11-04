@@ -16,21 +16,62 @@ før den avslutter. */
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
+#include <unistd.h>
+#include <netdb.h>
 #include <sys/socket.h>
+//#include <sys/types.h>
+#include <arpa/inet.h>
+#include <linux/in.h>
+
+#define SERVER_PORT 80
+#define MAXLINE 3096
+#define SA struct sockaddr
+#define WEBADDR "77.111.240.75"
+int errorHandling(){
+    printf("sumthingswron");
+}
 
 int main(){
-    char* getreq = "GET\\DATA.HTML HTTP/1.1\r\n";
-    char* domain = "http://www.eastwillsecurity.com/pg3401/test.html";
-    int sockFd;
+   // char* getreq = "GET /pg3401/test.html HTTP/1.1\r\n";
+   // char* domain = "http://www.eastwillsecurity.com/pg3401/test.html";
+    int sockFd, n, sendbytes;
+    struct sockaddr_in servaddr;
+    char    sendline[MAXLINE];
+    char    recvline[MAXLINE];
     sockFd = socket(AF_INET,SOCK_STREAM,0);
     if(sockFd < 0) 
         printf("socket not opened properly");
+    bzero(&servaddr, sizeof(servaddr));
+    //struct sockaddr_in saAddr = {0};
+    //int iPort = atoi("80");
+   // saAddr.sin_family;
+    servaddr.sin_family = AF_INET;
+    servaddr.sin_port   = htons(SERVER_PORT);//hgons ->> network standard byteorder
+    //connect()
+    if(inet_pton(AF_INET,"77.111.240.75",&servaddr.sin_addr)<=0)
+        errorHandling();
+    if(connect(sockFd, (SA*)&servaddr,sizeof(servaddr))<0)
+        errorHandling();
 
-    struct sockaddr_in saAddr = {0};
-    int iPort = atoi("80");
-    saAddr.sin_family
+    sprintf(sendline, "GET /pg3401/test.html HTTP/1.1\r\n");//maybe write here
+    sendbytes = strlen(sendline);
 
-    connect()
+    if(write(sockFd, sendline, sendbytes)!= sendbytes)
+        errorHandling();
 
+    memset(recvline,0,MAXLINE);
+
+    while ((n=read(sockFd,recvline,MAXLINE-1))>0)
+        {
+            printf("%s",recvline);
+        }
+        if(n<0)
+            errorHandling;
+    exit(0);
+    {
+        /* code */
+    }
+    
 
 }
