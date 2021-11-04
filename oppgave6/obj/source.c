@@ -28,8 +28,8 @@ før den avslutter. */
 #define MAXLINE 3096
 #define SA struct sockaddr
 #define WEBADDR "77.111.240.75"
-int errorHandling(){
-    printf("sumthingswron");
+int errorHandling(char * error){
+    printf("%s\n",error);
 }
 
 int main(){
@@ -50,16 +50,18 @@ int main(){
     servaddr.sin_port   = htons(SERVER_PORT);//hgons ->> network standard byteorder
     //connect()
     if(inet_pton(AF_INET,"77.111.240.75",&servaddr.sin_addr)<=0)
-        errorHandling();
+        errorHandling("convert ip to binary");
+        errorHandling("converted ip to binary");
     if(connect(sockFd, (SA*)&servaddr,sizeof(servaddr))<0)
-        errorHandling();
+        errorHandling("error connection to ip");
+        errorHandling("connected to ip");
 
-    sprintf(sendline, "GET /pg3401/test.html HTTP/1.1\r\n");//maybe write here
+    sprintf(sendline, "GET /pg3401/test.html HTTP/1.1\r\nHost: eastwillsecurity.com\r\nContent-type: application/x-www-form-urlencoded\r\ncontent-length:420 \r\n\r\n\r\n");//maybe write here
     sendbytes = strlen(sendline);
 
     if(write(sockFd, sendline, sendbytes)!= sendbytes)
-        errorHandling();
-
+        errorHandling("error write");
+    errorHandling("wrote to socket");
     memset(recvline,0,MAXLINE);
 
     while ((n=read(sockFd,recvline,MAXLINE-1))>0)
@@ -67,11 +69,10 @@ int main(){
             printf("%s",recvline);
         }
         if(n<0)
-            errorHandling;
+            errorHandling("error read");
+        errorHandling("read done");
     exit(0);
-    {
-        /* code */
-    }
+   
     
 
 }
