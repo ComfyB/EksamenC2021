@@ -34,8 +34,8 @@ int errorHandling(char * error){
 }
 
 int main(void){
-   // char* getreq = "GET /pg3401/test.html HTTP/1.1\r\n";
-   // char* domain = "http://www.eastwillsecurity.com/pg3401/test.html";
+   
+   //"http://www.eastwillsecurity.com/pg3401/test.html";
     int         sockFd, n, sendbytes;
     struct      sockaddr_in servaddr;
     

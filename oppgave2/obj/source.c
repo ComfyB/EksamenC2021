@@ -5,7 +5,7 @@
 
 int toDecimal(char *in);
 int letterOccurenceCounter();
-
+/*fikse med array i inputen og bruke strtol(in,NULL,16); istedenfor todec*/
 int main(){
     char* ch, ch2;
    //åpne filer for input/output
@@ -35,7 +35,7 @@ return 0;
 int letterOccurenceCounter(){
     char* c;
     int counter[28];
-    int tmp, i,character;
+    int tmp, i,character;;
     memset(counter,0,sizeof(counter));
     printf("\n");
     FILE *fptrInput = fopen("toascii", "r");
@@ -50,13 +50,14 @@ int letterOccurenceCounter(){
             counter[tmp] += 1;
     } 
     
-    for(i = 0; i<28; i++){
+    for(i = 0; i<26; i+=2){
         character = i;        
         printf("%c = ", character+65);
-        printf("%d\n",counter[i]);
+        printf("%d\t",counter[i]);
+        printf("%c = ", character+66);
+        printf("%d\n",counter[i+1]);
     }
-
-  return 0;
+    return 0;
 
 } 
 
@@ -65,8 +66,10 @@ int toDecimal(char *in){
     long decimal = 0, base = 1;
     length = strlen(in);
    //printf("i funksjonen to decimal");
+   decimal = strtol(in,NULL,16);
   for(i= length; i>=0; i--){
-      if(in[i]>='0' && in[i]<= '9'){
+      
+     /*  if(in[i]>='0' && in[i]<= '9'){
           decimal+=(in[i]-48)*base;
           base *= 16;
       }else if(in[i]>='A'&& in[i]<='F'){
@@ -75,7 +78,7 @@ int toDecimal(char *in){
       }else if(in[i]>='a' && in[i]<= 'f'){
           decimal+=(in[i]-87)*base;
           base*=16;
-      }
+      } */
   }
   return decimal;
 }

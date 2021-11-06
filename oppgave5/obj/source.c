@@ -33,7 +33,7 @@ hver tekststreng skal appendes (legges til på slutten) filen.
 /*
 #33###############3
 avslutter om quit er første ord!!!!
-
+casting to single pointer er ass måte å gjøre det på!
 
 */
 typedef struct Buffer{
@@ -47,7 +47,6 @@ pthread_mutex_t lock_x;
 void *workThread(void *structPointer){
   
     Buffer *Buffer = structPointer;
-
     while(strncmp(*Buffer->input,"quit",4)){
         
         printf("Thread_1_Id: %ld\n",syscall(SYS_gettid));
@@ -58,33 +57,35 @@ void *workThread(void *structPointer){
 
         //kjører whileloopen når den får signal
         
-        pthread_mutex_trylock(&lock_x);
-        pthread_cond_signal(&writing_status);
-        pthread_cond_wait(&shared_x,&lock_x);
-        pthread_mutex_unlock(&lock_x);
+        pthread_mutex_trylock   (&lock_x);
+        pthread_cond_signal     (&writing_status);
+        pthread_cond_wait       (&shared_x,&lock_x);
+        pthread_mutex_unlock    (&lock_x);
     }
-    pthread_cond_signal(&writing_status);
-    printf("\nworkThread is Ready to Join!\n");
-    pthread_exit(0);  
+    pthread_cond_signal (&writing_status);
+    printf              ("\nworkThread is Ready to Join!\n");
+    pthread_exit        (0);  
 }    
   
     
 
 
 int main(){
+    char *szInput;
+
     pthread_mutex_init  (&lock_x,NULL);
     pthread_cond_init   (&shared_x,NULL);
     pthread_cond_init   (&writing_status,NULL);
-    
+
     Buffer      *Buffer = malloc(sizeof(Buffer));
     pthread_t   thread_1;
     
     printf("ThreadId: %ld",syscall(SYS_gettid));
     pthread_create  (&thread_1, NULL, workThread, &Buffer);
     
-    while(strncmp((char*)Buffer->input,"quit",4)){
-        
-        fgets   ((char*)Buffer->input,11,stdin);//take input
+    while(strncmp((char*)  Buffer->input,"quit",4)){
+
+        szInput = fgets   ((char*)Buffer->input,11,stdin);//take input
 
         pthread_cond_signal     (&shared_x);//sender signal for å kjøre while loopen en gang
         pthread_cond_wait       (&writing_status,&lock_x);//kjører whileloopeb når den får signal

@@ -44,6 +44,7 @@ void cleanUpAndExit(Node **pheadNode);
 int main(){
     Node *pheadNode = NULL;
     menu(pheadNode);
+
 return 0;
 }
 
