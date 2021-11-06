@@ -25,24 +25,28 @@ før den avslutter. */
 #include <linux/in.h>
 
 #define SERVER_PORT 80
-#define MAXLINE 3096
+#define MAXLINE 4096
 #define SA struct sockaddr
 #define WEBADDR "77.111.240.75"
 int errorHandling(char * error){
     printf("%s\n",error);
+    return 1;
 }
 
-int main(){
+int main(void){
    // char* getreq = "GET /pg3401/test.html HTTP/1.1\r\n";
    // char* domain = "http://www.eastwillsecurity.com/pg3401/test.html";
-    int sockFd, n, sendbytes;
-    struct sockaddr_in servaddr;
-    char    sendline[MAXLINE];
-    char    recvline[MAXLINE];
-    sockFd = socket(AF_INET,SOCK_STREAM,0);
+    int         sockFd, n, sendbytes;
+    struct      sockaddr_in servaddr;
+    
+    char        sendline[MAXLINE];
+    char        recvline[MAXLINE];
+    sockFd =    socket(AF_INET,SOCK_STREAM,0);
+
     if(sockFd < 0) 
         printf("socket not opened properly");
-    bzero(&servaddr, sizeof(servaddr));
+    
+    bzero(&servaddr, sizeof(servaddr)); // malloc and memset to 0; swap too this ! 
     //struct sockaddr_in saAddr = {0};
     //int iPort = atoi("80");
    // saAddr.sin_family;
@@ -51,17 +55,21 @@ int main(){
     //connect()
     if(inet_pton(AF_INET,"77.111.240.75",&servaddr.sin_addr)<=0)
         errorHandling("convert ip to binary");
-        errorHandling("converted ip to binary");
+
+    printf("converted ip to binary");
+
     if(connect(sockFd, (SA*)&servaddr,sizeof(servaddr))<0)
         errorHandling("error connection to ip");
-        errorHandling("connected to ip");
 
-    sprintf(sendline, "GET /pg3401/test.html HTTP/1.1\r\nHost: eastwillsecurity.com\r\nContent-type: application/x-www-form-urlencoded\r\ncontent-length:420 \r\n\r\n\r\n");//maybe write here
+    printf("connected to ip");
+
+    sprintf(sendline, "GET /pg3401/test.html HTTP/1.1\r\nHost: eastwillsecurity.com\r\n\r\n");//maybe write here
     sendbytes = strlen(sendline);
 
     if(write(sockFd, sendline, sendbytes)!= sendbytes)
         errorHandling("error write");
-    errorHandling("wrote to socket");
+
+    printf("wrote to socket");
     memset(recvline,0,MAXLINE);
 
     while ((n=read(sockFd,recvline,MAXLINE-1))>0)
@@ -70,9 +78,9 @@ int main(){
         }
         if(n<0)
             errorHandling("error read");
-        errorHandling("read done");
-    exit(0);
-   
-    
 
+    close(sockFd);
+    printf("read done");
+
+    return 0;
 }

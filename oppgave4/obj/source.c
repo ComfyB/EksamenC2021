@@ -26,6 +26,8 @@ typedef struct _MYHTTP {
    char szContentType[16]; 
    int iLastModified; //added last modified
 } MYHTTP;
+
+
 MYHTTP* ProcessHttpHeader(char *pszHttp) {
    char* pszPtr;
    MYHTTP* pHttp = (MYHTTP*)malloc(sizeof(MYHTTP)); 

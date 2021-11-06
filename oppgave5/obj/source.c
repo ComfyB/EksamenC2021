@@ -28,9 +28,14 @@ hver tekststreng skal appendes (legges til på slutten) filen.
 #include <stdlib.h>
 #include <pthread.h>
 #include <string.h>
-//#include <syscall.h>// må aktiveres for feilsøking med syscall
+#include <syscall.h>// må aktiveres for feilsøking med syscall
 #include <unistd.h>//for sleeep
+/*
+#33###############3
+avslutter om quit er første ord!!!!
 
+
+*/
 typedef struct Buffer{
   char* input[11];
 }Buffer;
@@ -45,7 +50,7 @@ void *workThread(void *structPointer){
 
     while(strncmp(*Buffer->input,"quit",4)){
         
-        //printf("Thread_1_Id: %ld\n",syscall(SYS_gettid));
+        printf("Thread_1_Id: %ld\n",syscall(SYS_gettid));
         
         FILE *outPut = fopen("outPut.txt","a");
         fprintf(outPut, "%s", *Buffer->input);
@@ -58,46 +63,49 @@ void *workThread(void *structPointer){
         pthread_cond_wait(&shared_x,&lock_x);
         pthread_mutex_unlock(&lock_x);
     }
-pthread_cond_signal(&writing_status);
-printf("\nworkThread is Ready to Join!\n");
-pthread_exit(0);  
+    pthread_cond_signal(&writing_status);
+    printf("\nworkThread is Ready to Join!\n");
+    pthread_exit(0);  
 }    
   
     
 
 
 int main(){
-    pthread_mutex_init(&lock_x,NULL);
-    pthread_cond_init(&shared_x,NULL);
-    pthread_cond_init(&writing_status,NULL);
-    Buffer *Buffer = malloc(sizeof(Buffer));
-    pthread_t thread_1;
+    pthread_mutex_init  (&lock_x,NULL);
+    pthread_cond_init   (&shared_x,NULL);
+    pthread_cond_init   (&writing_status,NULL);
     
-    //printf("ThreadId: %ld",syscall(SYS_gettid));
-    pthread_create(&thread_1, NULL, workThread, &Buffer);
+    Buffer      *Buffer = malloc(sizeof(Buffer));
+    pthread_t   thread_1;
+    
+    printf("ThreadId: %ld",syscall(SYS_gettid));
+    pthread_create  (&thread_1, NULL, workThread, &Buffer);
     
     while(strncmp((char*)Buffer->input,"quit",4)){
         
-        fgets((char*)Buffer->input,11,stdin);//take input
+        fgets   ((char*)Buffer->input,11,stdin);//take input
 
-        pthread_cond_signal(&shared_x);//sender signal for å kjøre while loopen en gang
-        pthread_cond_wait(&writing_status,&lock_x);//kjører whileloopeb når den får signal
+        pthread_cond_signal     (&shared_x);//sender signal for å kjøre while loopen en gang
+        pthread_cond_wait       (&writing_status,&lock_x);//kjører whileloopeb når den får signal
         
         //sleep(1);//for feilsøking av tråder
       
     }
     
    
-    pthread_cond_signal(&shared_x);//sender signal for å kjøre while loopen en gang
-    printf("\nMain Thread Ready to Join!\n");
-    pthread_join(thread_1, NULL); 
-    pthread_mutex_unlock(&lock_x);
-    pthread_mutex_destroy(&lock_x);
+    pthread_cond_signal     (&shared_x);//sender signal for å kjøre while loopen en gang
+    printf                  ("\nMain Thread Ready to Join!\n");
 
-    pthread_cond_destroy(&shared_x);
-    pthread_cond_destroy(&writing_status);
-    free(Buffer);
-    printf("\nCleanup Done!\n");
+    pthread_join            (thread_1, NULL); 
+    pthread_mutex_unlock    (&lock_x);
+    pthread_mutex_destroy   (&lock_x);
+
+    pthread_cond_destroy    (&shared_x);
+    pthread_cond_destroy    (&writing_status);
+
+    free        (Buffer);
+    printf      ("\nCleanup Done!\n");
     
     return 0;
     

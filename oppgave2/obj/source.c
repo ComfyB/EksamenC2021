@@ -1,14 +1,16 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <ctype.h>
+
 int toDecimal(char *in);
+int letterOccurenceCounter();
 
 int main(){
     char* ch, ch2;
-
    //åpne filer for input/output
-    FILE *fptrIn = fopen("hexdec.txt", "r");
-    FILE *fptrOut = fopen("toascii.txt", "w");
+    FILE *fptrIn = fopen("hexdec", "r");
+    FILE *fptrOut = fopen("toascii", "w");
 
     //check if file is found
     if(fptrIn == NULL || fptrOut == NULL){
@@ -27,8 +29,36 @@ int main(){
     }
     fclose(fptrIn);
     fclose(fptrOut);
+    letterOccurenceCounter();
 return 0;
 }
+int letterOccurenceCounter(){
+    char* c;
+    int counter[28];
+    int tmp, i,character;
+    memset(counter,0,sizeof(counter));
+    printf("\n");
+    FILE *fptrInput = fopen("toascii", "r");
+      if(fptrInput == NULL) {
+        printf("File Not found");
+        exit(1);
+    }
+    while((c=fgetc(fptrInput))!= EOF){
+       tmp = toupper(c);
+       tmp = (int)tmp-65;
+       if(tmp>=0 && tmp<=28)
+            counter[tmp] += 1;
+    } 
+    
+    for(i = 0; i<28; i++){
+        character = i;        
+        printf("%c = ", character+65);
+        printf("%d\n",counter[i]);
+    }
+
+  return 0;
+
+} 
 
 int toDecimal(char *in){
     int i, length;
