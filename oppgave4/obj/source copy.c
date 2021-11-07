@@ -38,51 +38,51 @@ MYHTTP* ProcessHttpHeader(char *pszHttp) {
     
 
    memset(pHttp, 0, sizeof(*pHttp));
-   // while (isalpha(*pszPtr))
-   //    pszPtr++;
+   while (isalpha(*pszPtr))
+      pszPtr++;
    
-   // strncpy(pHttp->iHttpCode,pszPtr,3); //denne ser rar ut mellomrom
-   // if (pHttp->iHttpCode == 200) { //NON Strict comparison! 
-   //    pHttp->bIsSuccess = true;
-   // }
-   // pszPtr = strstr(pszHttp, "Server");// blir en pointer for start of server
-   // if(!pszPtr)
-   //    printf("no server in header!\n");
-   // if (pszPtr) {
+   strncpy(pHttp->iHttpCode,pszPtr,3); //denne ser rar ut mellomrom
+   if (pHttp->iHttpCode == 200) { //NON Strict comparison! 
+      pHttp->bIsSuccess = true;
+   }
+   pszPtr = strstr(pszHttp, "Server");// blir en pointer for start of server
+   if(!pszPtr)
+      printf("no server in header!\n");
+   if (pszPtr) {
 
-   //    printf("andre if");
-   //    pszPtr += 6; //hopper 6char fram -- lengden på ordet server
+      printf("andre if");
+      pszPtr += 6; //hopper 6char fram -- lengden på ordet server
       
-   //    while (!isalpha(pszPtr[0]))
-   //       pszPtr++; 
-   // //strchr(pszPtr, '\n')[0] = 0; //returner denne en pointer som blir satt til 0? denne er veldig sannsynlig feil
-   //    strcpy(pHttp->szServer, pszPtr);   
-   //    printf("%s etter while is alpha",pszPtr);
-   //    pszPtr[strlen(pHttp->szServer)] = '\n';// setter \n i fila?
+      while (!isalpha(pszPtr[0]))
+         pszPtr++; 
+   //strchr(pszPtr, '\n')[0] = 0; //returner denne en pointer som blir satt til 0? denne er veldig sannsynlig feil
+      strcpy(pHttp->szServer, pszPtr);   
+      printf("%s etter while is alpha",pszPtr);
+      pszPtr[strlen(pHttp->szServer)] = '\n';// setter \n i fila?
      
-   // } 
-   // pszPtr = strstr(pszHttp, "Content-Type"); //segmentation fault her eller i if
+   } 
+   pszPtr = strstr(pszHttp, "Content-Type"); //segmentation fault her eller i if
     
-   // if(!pszPtr)
-   //    printf("no Content type in header!\n");
-   // if (pszPtr) {
-   //    pszPtr += 12; 
-   //    while (!isalpha(pszPtr[0])) 
-   //      pszPtr++; 
-   //    //strchr(pszPtr, '\n')[0] = 0; //denne og setter vel pointer
-   //    strncpy(pHttp->szContentType, pszPtr, 15); 
-   //    pszPtr[strlen(pHttp->szContentType)] = '\n';
-   // }
-   // pszPtr = strstr(pszHttp, "Content-Length");
-   //   if(!pszPtr)
-   //    printf("no content length in header!");
-   // printf("%s",pszHttp);
-   // if (pszPtr) {
-   //    pszPtr += 16; 
-   //    while (!isdigit(pszPtr[0])) 
-   //       pszPtr++; 
-   //    pHttp->iContentLength = atoi(pszPtr); //feil
-   // }
+   if(!pszPtr)
+      printf("no Content type in header!\n");
+   if (pszPtr) {
+      pszPtr += 12; 
+      while (!isalpha(pszPtr[0])) 
+        pszPtr++; 
+      //strchr(pszPtr, '\n')[0] = 0; //denne og setter vel pointer
+      strncpy(pHttp->szContentType, pszPtr, 15); 
+      pszPtr[strlen(pHttp->szContentType)] = '\n';
+   }
+   pszPtr = strstr(pszHttp, "Content-Length");
+     if(!pszPtr)
+      printf("no content length in header!");
+   printf("%s",pszHttp);
+   if (pszPtr) {
+      pszPtr += 16; 
+      while (!isdigit(pszPtr[0])) 
+         pszPtr++; 
+      pHttp->iContentLength = atoi(pszPtr); //feil
+   }
    return pHttp;
 }
 

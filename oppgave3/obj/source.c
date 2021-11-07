@@ -50,7 +50,8 @@ return 0;
 
 
 void menu(Node *pheadNode){
-    int choice;
+    char choice;
+    int inputOk;
         printf("\n*********************\n");
         printf("Menu\n");
         printf("\n*********************\n");
@@ -61,45 +62,68 @@ void menu(Node *pheadNode){
         printf("4. Sum av alle varer: \n");
         printf("5. Kvittering\n");
         printf("6. Exit program\n");
-        scanf("%i", &choice);
-            switch (choice){
-                case 1:
+        for(;;){
+            inputOk = scanf("%c", &choice);
+            
+            if(choice >='1' && choice <='6')
+                break;
+           // printf("not a valid option");
+        }
+        switch (choice){
+            case '1':
                     handleInput(&pheadNode);
                     break;
-                case 2:
+            case '2':
                     deQueue(&pheadNode);
                     break;                
-                case 3:
+            case '3':
                     searchAndDelete(&pheadNode);
                     break;
-                case 4:
+            case '4':
                     sum(&pheadNode);
                     break;
-                case 5:
+            case '5':
                     printList(&pheadNode);
                     break;
-                case 6:
+            case '6':
                     cleanUpAndExit(&pheadNode);
                     break;
-                default:
-                    printf("not a valid option");
-            }
+            default:
+                    printf("something went wrong");   
+                    cleanUpAndExit(&pheadNode); 
+        }
 }
 
 
 void handleInput(Node **pheadNode){
 
     char * navn = malloc(sizeof(char)*25);
-    float pris;
+    float validate= 0, pris;
     int antall;
+    int inputOk;
+    int i=0;
+   // char clearBuff[255];
 
     printf("\n*********************\n");
     printf("Oppgi et varenavn og trykk enter:  ");
-    scanf("%s", navn);
+    inputOk = scanf("%s", navn);
     printf("\nOppgi en pris og trykk enter:  ");
-    scanf("%f",&pris);
+            while(1){
+                
+                if(scanf("%f", &pris)) //,printf("\n")
+                    break;
+                //fflush(stdin);
+                while(fgetc(stdin)== 1){
+                i=0;
+                }
+                i++;
+                if(i%3 == 0||i==0)printf(". ");
+                if(i==1)printf("\n please insert a valid numbah:\n");
+            }
+            
+        
     printf("\nOppgi antall varer og trykk enter:  ");
-    scanf("%d",&antall);
+    inputOk = scanf("%d",&antall);
     printf("\n");
 
     queue(pheadNode, navn, pris, antall);
@@ -151,7 +175,7 @@ menu(*pheadNode);
 } //print all nodes into terminal
    
 void deQueue(Node **pheadNode){
- 
+ //Need to check if empty!! 
     Node *i=*pheadNode;
        if(i->NEXT==NULL){
            *pheadNode=i->NEXT;
@@ -166,11 +190,12 @@ void deQueue(Node **pheadNode){
 } //delete last added node
 
 void searchAndDelete(Node **pheadNode){
+    int inputOk;
     char * searchTerm = malloc(sizeof(char)*25);
     
     printf("\nSkriv navnet på det du ønsker å slette: \n");
 //trenger input validering! ! ! ! 
-    scanf("%s", searchTerm);
+    inputOk = scanf("%s", searchTerm);
      // Store head node
     Node *i = *pheadNode, *prev = NULL; //node i = temporary
 
