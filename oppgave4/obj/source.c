@@ -41,7 +41,7 @@ MYHTTP* ProcessHttpHeader(char *pszHttp) {
    memset(pHttp, 0, sizeof(MYHTTP));
 
    pHttp->iHttpCode = atoi(pszHttp + strlen("HTTP/1.x "));
-   if (pHttp->iHttpCode == 200) { //dis is fixed
+   if (pHttp->iHttpCode ==  200) { //dis is fixed
       pHttp->bIsSuccess = true;
    }
    pszPtr = strstr(pszHttp, "Server");
@@ -51,7 +51,6 @@ MYHTTP* ProcessHttpHeader(char *pszHttp) {
 
    
        pszPtr += 6; 
-   
       while (!isalpha(pszPtr[0]))
          pszPtr++;
       copyLength = *strchr(pszPtr, '\n');
@@ -70,9 +69,9 @@ MYHTTP* ProcessHttpHeader(char *pszHttp) {
 
       copyLength = *strchr(pszPtr, '\n');
 
-      strncpy(pHttp->szContentType, pszPtr, copyLength);
+      strncpy(pHttp->szContentType, pszPtr, copyLength); //feil eller ikke? 
     }
-   pszPtr = strstr(pszHttp, "Content-Length");
+   pszPtr = strstr(pszHttp, "Content-Length");  
 
 
 
@@ -104,7 +103,7 @@ printf("http - code: %d\n",m->iHttpCode);
 printf("Is success?: %d\n",m->bIsSuccess);
 printf("Content type: %s\n",m->szContentType);
 printf("Server: %s\n",m->szServer);
-printf("Last-modified: %d", m->iLastModified);
+printf("Last-modified: %d", m->iLastModified); //MÅ skrive funksjonen!!! 
 
 return 0;
 }
