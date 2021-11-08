@@ -35,9 +35,10 @@ MYHTTP* ProcessHttpHeader(char *pszHttp) {
 
    if (!pHttp) return NULL;
 
-
    memset(pHttp, 0, sizeof(MYHTTP));
+
    pHttp->iHttpCode = atoi(pszHttp + strlen("HTTP/1.x "));
+
    if (pHttp->iHttpCode = 200) {
       pHttp->bIsSuccess = true;
    }
@@ -45,10 +46,8 @@ MYHTTP* ProcessHttpHeader(char *pszHttp) {
    
    
    if (pszPtr) {
-
-   
       pszPtr += 6; 
-   
+      
       while (!isalpha(pszPtr[0]))
          pszPtr++;
       strchr(pszPtr, '\n')[0] = 0;

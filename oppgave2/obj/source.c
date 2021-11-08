@@ -53,7 +53,7 @@ int letterOccurenceCounter(){
        if(tmp>=0 && tmp<=28)
             counter[tmp] += 1;
     } 
-    
+    //op
     
     for(i = 0; i<26; i+=2){
         character = i;        

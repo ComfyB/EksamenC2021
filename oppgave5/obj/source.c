@@ -37,7 +37,7 @@ casting to single pointer er ass måte å gjøre det på!
 
 */
 typedef struct Buffer{
-  char* input[11];
+  char input[11];
 }Buffer;
 
 pthread_cond_t shared_x;
@@ -47,13 +47,13 @@ pthread_mutex_t lock_x;
 void *workThread(void *structPointer){
   
     Buffer *Buffer = structPointer;
-    while(strncmp(*Buffer->input,"quit",4)){
+    while(strncmp(Buffer->input,"quit",4)){
         
         printf("Thread_1_Id: %ld\n",syscall(SYS_gettid));
         
-        FILE *outPut = fopen("outPut.txt","a");
-        fprintf(outPut, "%s", *Buffer->input);
-        fclose(outPut);
+        FILE    *outPut =     fopen("outPut.txt","a");
+        fprintf (outPut,"%s", Buffer->input);
+        fclose  (outPut);
 
         //kjører whileloopen når den får signal
         
@@ -77,16 +77,16 @@ int main(){
     pthread_cond_init   (&shared_x,NULL);
     pthread_cond_init   (&writing_status,NULL);
 
-    Buffer      *Buffer = malloc(sizeof(Buffer));
+    Buffer      *Buffer = malloc(sizeof(struct Buffer));
     pthread_t   thread_1;
     
     printf("ThreadId: %ld",syscall(SYS_gettid));
-    pthread_create  (&thread_1, NULL, workThread, &Buffer);
+    pthread_create  (&thread_1, NULL, workThread, Buffer);
     
-    while(strncmp((char*)  Buffer->input,"quit",4)){
+    while(strncmp(Buffer->input,"quit",4)){
 
-        szInput = fgets   ((char*)Buffer->input,11,stdin);//take input
-
+        szInput = fgets   (Buffer->input,11,stdin);//take input
+        printf("%s", Buffer->input);
         pthread_cond_signal     (&shared_x);//sender signal for å kjøre while loopen en gang
         pthread_cond_wait       (&writing_status,&lock_x);//kjører whileloopeb når den får signal
         
@@ -97,8 +97,8 @@ int main(){
    
     pthread_cond_signal     (&shared_x);//sender signal for å kjøre while loopen en gang
     printf                  ("\nMain Thread Ready to Join!\n");
-
     pthread_join            (thread_1, NULL); 
+    printf("joined threads");
     pthread_mutex_unlock    (&lock_x);
     pthread_mutex_destroy   (&lock_x);
 

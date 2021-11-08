@@ -62,12 +62,13 @@ void menu(Node *pheadNode){
         printf("4. Sum av alle varer: \n");
         printf("5. Kvittering\n");
         printf("6. Exit program\n");
-        for(;;){
+        while(1){
             inputOk = scanf("%c", &choice);
             
             if(choice >='1' && choice <='6')
                 break;
-           // printf("not a valid option");
+            if(choice != '\n')
+                printf("%s is not a valid menu option!\n",&choice);
         }
         switch (choice){
             case '1':
@@ -103,7 +104,7 @@ void handleInput(Node **pheadNode){
     int inputOk;
     int i=0;
    // char clearBuff[255];
-
+//kdjsadk
     printf("\n*********************\n");
     printf("Oppgi et varenavn og trykk enter:  ");
     inputOk = scanf("%s", navn);
@@ -176,6 +177,10 @@ menu(*pheadNode);
    
 void deQueue(Node **pheadNode){
  //Need to check if empty!! 
+    if(*pheadNode == NULL){
+        printf ("nothing to delete");
+        menu(*pheadNode);
+    }
     Node *i=*pheadNode;
        if(i->NEXT==NULL){
            *pheadNode=i->NEXT;
