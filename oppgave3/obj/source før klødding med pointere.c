@@ -34,7 +34,7 @@ typedef struct Node{
 
 void queue(Node **pheadNode, char* navn, float pris, int antall); //add a node to the end of the list
 void printList(Node **pheadNode); //print all nodes into terminal
-void deQueue(Node *pheadNode); //delete last added node
+void deQueue(Node **pheadNode); //delete last added node
 void searchAndDelete(Node **pheadNode); //delete all nodes with name "*Input*"
 float sum(Node **pheadNode); //sum pris på alle varer i listen
 void menu(Node *pheadNode);
@@ -43,7 +43,6 @@ void cleanUpAndExit(Node *pheadNode);
 
 int main(){
     Node *pheadNode = NULL;
-    
     menu(pheadNode);
     free(pheadNode);
 return 0;
@@ -76,7 +75,7 @@ void menu(Node *pheadNode){
                     handleInput(&pheadNode);
                     break;
             case '2':
-                    deQueue(pheadNode);
+                    deQueue(&pheadNode);
                     break;                
             case '3':
                     searchAndDelete(&pheadNode);
@@ -88,7 +87,7 @@ void menu(Node *pheadNode){
                     printList(&pheadNode);
                     break;
             case '6':
-                    cleanUpAndExit(pheadNode);
+                    cleanUpAndExit(&pheadNode);
                     break;
             default:
                     printf("something went wrong");   
@@ -100,7 +99,7 @@ void menu(Node *pheadNode){
 void handleInput(Node **pheadNode){
 
     char * navn = malloc(sizeof(char)*25);
-    float pris;
+    float validate= 0, pris;
     int antall;
     int inputOk;
     int i=0;
@@ -119,17 +118,15 @@ void handleInput(Node **pheadNode){
                     i=0;
                 }
                 i++;
-                if(i%3 == 0||i==0)
-                    printf(". \n");
-                if(i==1)
-                    printf("please insert a valid number:\n");
+                if(i%3 == 0||i==0)printf(". ");
+                if(i==1)printf("\n please insert a valid numbah:\n");
             }
             
         
     printf("\nOppgi antall varer og trykk enter:  ");
     inputOk = scanf("%d",&antall);
     printf("\n");
-       
+
     queue(pheadNode, navn, pris, antall);
 }
 
@@ -148,6 +145,7 @@ void queue(Node **pheadNode, char* navn, float pris, int antall){
             printf("%f",newNode->PRIS);
             printf("nullNode");
             menu(*pheadNode);
+            return;
         } 
     
     Node *i = *pheadNode;   
@@ -177,31 +175,23 @@ printf("TotalSummen = %f",sum(pheadNode));
 menu(*pheadNode);
 } //print all nodes into terminal
    
-void deQueue(Node *pheadNode){
-
+void deQueue(Node **pheadNode){
  //Need to check if empty!! 
-    if(pheadNode == NULL){
+    if(*pheadNode == NULL){
         printf ("nothing to delete");
-        menu(pheadNode);
-    } 
-  
-    Node *i= malloc(sizeof(Node));
-    memset(i,0,sizeof(Node));
-    i = pheadNode;
-    if(i->NEXT == NULL){
-        free(i);
-        menu(NULL);
+        menu(*pheadNode);
     }
-    while(i->NEXT != NULL) {
-        i = i->NEXT;
-    }
-    if(i->NEXT==NULL){
-        i->PREV->NEXT = NULL;
-        free(i);
-        menu(pheadNode);
-    }
-    
-
+    Node *i=*pheadNode;
+       if(i->NEXT==NULL){
+           *pheadNode=i->NEXT;
+           menu(*pheadNode);
+           free(i);
+           return;
+       }
+    while(i->NEXT!= NULL) i = i->NEXT;
+    i->PREV->NEXT = NULL;
+    free(i);
+    menu(*pheadNode);
 } //delete last added node
 
 void searchAndDelete(Node **pheadNode){
@@ -257,11 +247,8 @@ float sum(Node **pheadNode){
 void cleanUpAndExit(Node *pheadNode){
   //  Node *tmp = *pheadNode;
     while(pheadNode!= NULL){
-        Node *tmp = pheadNode->NEXT;
-        free(pheadNode);
-        pheadNode = tmp;
-    
+        Node *next = pheadNode->NEXT;
+        free(next);
+        pheadNode = next;
     }
-    exit(0);
-    
 }

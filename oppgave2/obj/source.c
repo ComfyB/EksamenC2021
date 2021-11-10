@@ -7,8 +7,8 @@
 int letterOccurenceCounter();
 /*fikse med array i inputen og bruke strtol(in,NULL,16); istedenfor todec*/
 int main(){
-    int *ch =0,ch2 =0;
-    long decimal = 0;
+    int ch,ch2;
+    long decimal;
 
     //åpne filer for input/output
     FILE *fptrIn = fopen("hexdec", "r");
@@ -20,26 +20,26 @@ int main(){
         exit(1);
     }
     //while to read through file.
-    while((int)(ch=fgetc(fptrIn))!=EOF){
+    while((ch=fgetc(fptrIn))!=EOF){
         ch2 = fgetc(fptrIn);
         //printf("%c",ch)
         strncat((char*)&ch,(char*)&ch2,1);
         decimal = strtol((char*)&ch,NULL,16);
         //write to output stream
         fputc(decimal, fptrOut);
-        printf("%c",decimal);
+        printf("%c",(int)decimal);
         
 
     }
     fclose(fptrIn);
     fclose(fptrOut);
+    
     letterOccurenceCounter();
+    
 return 0;
 }
 int letterOccurenceCounter(){
-    char* c;
-    int counter[28];
-    int tmp, i,character;
+    int c, counter[28], tmp, i,character;
     memset(counter,0,sizeof(counter));
     printf("\n");
     FILE *fptrInput = fopen("toascii", "r");
@@ -47,9 +47,9 @@ int letterOccurenceCounter(){
         printf("File Not found");
         exit(1);
     }
-    while((int)(c=fgetc(fptrInput))!= EOF){
-       tmp = toupper((int)c);
-       tmp = (int)tmp-'A';
+    while((c=fgetc(fptrInput))!= EOF){
+       tmp = toupper(c);
+       tmp = tmp-'A';
        if(tmp>=0 && tmp<=28)
             counter[tmp] += 1;
     } 

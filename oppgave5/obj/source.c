@@ -36,20 +36,22 @@ avslutter om quit er første ord!!!!
 casting to single pointer er ass måte å gjøre det på!
 
 */
+
 typedef struct Buffer{
   char input[11];
 }Buffer;
+pthread_mutex_t lock_x;
 
 pthread_cond_t shared_x;
 pthread_cond_t writing_status;
-pthread_mutex_t lock_x;
+ 
 
 void *workThread(void *structPointer){
-  
+    
     Buffer *Buffer = structPointer;
     while(strncmp(Buffer->input,"quit",4)){
         
-        printf("Thread_1_Id: %ld\n",syscall(SYS_gettid));
+       // printf("Thread_1_Id: %ld\n",syscall(SYS_gettid));
         
         FILE    *outPut =     fopen("outPut.txt","a");
         fprintf (outPut,"%s", Buffer->input);
@@ -72,29 +74,30 @@ void *workThread(void *structPointer){
 
 int main(){
     char *szInput;
-
+    szInput = malloc(sizeof (char)*11);
     pthread_mutex_init  (&lock_x,NULL);
     pthread_cond_init   (&shared_x,NULL);
-    pthread_cond_init   (&writing_status,NULL);
+    pthread_cond_init   (&writing_status,NULL); 
 
-    Buffer      *Buffer = malloc(sizeof(struct Buffer));
+    Buffer      *structBuffer = malloc(sizeof(Buffer));
+   // *structBuffer->input =0; 
+   
     pthread_t   thread_1;
-    
-    printf("ThreadId: %ld",syscall(SYS_gettid));
-    pthread_create  (&thread_1, NULL, workThread, Buffer);
-    
-    while(strncmp(Buffer->input,"quit",4)){
+   // *structBuffer->input = malloc(sizeof (char)*11);
+   // printf("ThreadId: %ld",syscall(SYS_gettid));
+    //szInput = fgets   (structBuffer->input,10,stdin);//take input
+     
 
-        szInput = fgets   (Buffer->input,11,stdin);//take input
-        printf("%s", Buffer->input);
+    pthread_create  (&thread_1, NULL, workThread, structBuffer);
+    while(strncmp(structBuffer->input,"quit",4)){
+        szInput = fgets   (structBuffer->input,10,stdin);//take input
         pthread_cond_signal     (&shared_x);//sender signal for å kjøre while loopen en gang
         pthread_cond_wait       (&writing_status,&lock_x);//kjører whileloopeb når den får signal
         
         //sleep(1);//for feilsøking av tråder
       
-    }
+    } 
     
-   
     pthread_cond_signal     (&shared_x);//sender signal for å kjøre while loopen en gang
     printf                  ("\nMain Thread Ready to Join!\n");
     pthread_join            (thread_1, NULL); 
@@ -105,7 +108,8 @@ int main(){
     pthread_cond_destroy    (&shared_x);
     pthread_cond_destroy    (&writing_status);
 
-    free        (Buffer);
+  //  free        (structBuffer->input);
+    free        (structBuffer);
     printf      ("\nCleanup Done!\n");
     
     return 0;

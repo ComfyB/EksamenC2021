@@ -7,7 +7,7 @@ int toDecimal(char *in);
 int letterOccurenceCounter();
 /*fikse med array i inputen og bruke strtol(in,NULL,16); istedenfor todec*/
 int main(){
-    char* ch, ch2;
+    int ch, ch2;
    //åpne filer for input/output
     FILE *fptrIn = fopen("hexdec", "r");
     FILE *fptrOut = fopen("toascii", "w");
@@ -21,11 +21,11 @@ int main(){
     while ((ch=fgetc(fptrIn)) != EOF){
         
         ch2= fgetc(fptrIn);
-        strncat(&ch,&ch2,1);
-        printf("%c",toDecimal(&ch));
+        strncat((char*)&ch,(char*)&ch2,1);
+        printf("%c",toDecimal((char*)&ch));
 
         //write to output stream
-        fputc(toDecimal(&ch), fptrOut);
+        fputc(toDecimal((char*)&ch), fptrOut);
     }
     fclose(fptrIn);
     fclose(fptrOut);
@@ -44,7 +44,7 @@ int letterOccurenceCounter(){
         exit(1);
     }
     while((c=fgetc(fptrInput))!= EOF){
-       tmp = toupper(c);
+       tmp = toupper((char*)c);
        tmp = (int)tmp-65;
        if(tmp>=0 && tmp<=28)
             counter[tmp] += 1;
