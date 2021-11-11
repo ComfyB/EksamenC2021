@@ -4,9 +4,9 @@
 #include <ctype.h>
 
 //int toDecimal(int *in);
-int letterOccurenceCounter();
+void letterOccurenceCounter();
 /*fikse med array i inputen og bruke strtol(in,NULL,16); istedenfor todec*/
-int main(){
+int main(void){
     int ch,ch2;
     long decimal;
 
@@ -38,7 +38,7 @@ int main(){
     
 return 0;
 }
-int letterOccurenceCounter(){
+void letterOccurenceCounter(){
     int c, counter[28], tmp, i,character;
     memset(counter,0,sizeof(counter));
     printf("\n");
@@ -63,6 +63,6 @@ int letterOccurenceCounter(){
         printf("%d\n",counter[i+1]);
     }
     fclose(fptrInput);
-    return 0;
+
 
 } 
