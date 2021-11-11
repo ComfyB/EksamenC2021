@@ -62,6 +62,7 @@ int letterOccurenceCounter(){
         printf("%c = ", character+66);
         printf("%d\n",counter[i+1]);
     }
+    fclose(fptrInput);
     return 0;
 
 } 

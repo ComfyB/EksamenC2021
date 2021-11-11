@@ -36,82 +36,90 @@ avslutter om quit er første ord!!!!
 casting to single pointer er ass måte å gjøre det på!
 
 */
+pthread_mutex_t lock_data;
+pthread_cond_t write_data;
+pthread_cond_t read_data;
 
 typedef struct Buffer{
   char input[11];
 }Buffer;
-pthread_mutex_t lock_x;
 
-pthread_cond_t shared_x;
-pthread_cond_t writing_status;
+
+
  
 
-void *workThread(void *structPointer){
-    
-    Buffer *Buffer = structPointer;
-    while(strncmp(Buffer->input,"quit",4)){
-        
-       // printf("Thread_1_Id: %ld\n",syscall(SYS_gettid));
-        
-        FILE    *outPut =     fopen("outPut.txt","a");
-        fprintf (outPut,"%s", Buffer->input);
-        fclose  (outPut);
-
-        //kjører whileloopen når den får signal
-        
-        pthread_mutex_trylock   (&lock_x);
-        pthread_cond_signal     (&writing_status);
-        pthread_cond_wait       (&shared_x,&lock_x);
-        pthread_mutex_unlock    (&lock_x);
-    }
-    pthread_cond_signal (&writing_status);
-    printf              ("\nworkThread is Ready to Join!\n");
-    pthread_exit        (0);  
-}    
-  
+void *workThread(void *structPointer);
     
 
-
-int main(){
+int main(void){
     char *szInput;
-    szInput = malloc(sizeof (char)*11);
-    pthread_mutex_init  (&lock_x,NULL);
-    pthread_cond_init   (&shared_x,NULL);
-    pthread_cond_init   (&writing_status,NULL); 
+    szInput =  malloc(sizeof (char)*11);
+    memset    (szInput,0,sizeof(char)*11);
+
+    pthread_mutex_init  (&lock_data,NULL);
+    pthread_cond_init   (&read_data,NULL);
+    pthread_cond_init   (&write_data,NULL); 
 
     Buffer      *structBuffer = malloc(sizeof(Buffer));
-   // *structBuffer->input =0; 
-   
+    memset      (structBuffer,0,sizeof(Buffer));
+    
     pthread_t   thread_1;
-   // *structBuffer->input = malloc(sizeof (char)*11);
-   // printf("ThreadId: %ld",syscall(SYS_gettid));
-    //szInput = fgets   (structBuffer->input,10,stdin);//take input
-     
+
 
     pthread_create  (&thread_1, NULL, workThread, structBuffer);
     while(strncmp(structBuffer->input,"quit",4)){
-        szInput = fgets   (structBuffer->input,10,stdin);//take input
-        pthread_cond_signal     (&shared_x);//sender signal for å kjøre while loopen en gang
-        pthread_cond_wait       (&writing_status,&lock_x);//kjører whileloopeb når den får signal
-        
+
+        szInput = fgets         (structBuffer->input,10,stdin);//take input
+        pthread_cond_signal     (&read_data);//sender signal for å kjøre while loopen en gang
+        pthread_cond_wait       (&write_data,&lock_data);//kjører whileloopeb når den får signal
+        szInput ="0";
         //sleep(1);//for feilsøking av tråder
       
     } 
     
-    pthread_cond_signal     (&shared_x);//sender signal for å kjøre while loopen en gang
+    pthread_cond_signal     (&read_data);//sender signal for å kjøre while loopen en gang
     printf                  ("\nMain Thread Ready to Join!\n");
     pthread_join            (thread_1, NULL); 
-    printf("joined threads");
-    pthread_mutex_unlock    (&lock_x);
-    pthread_mutex_destroy   (&lock_x);
 
-    pthread_cond_destroy    (&shared_x);
-    pthread_cond_destroy    (&writing_status);
+    printf                  ("joined threads");
+    
+    pthread_mutex_unlock    (&lock_data);
+    pthread_mutex_destroy   (&lock_data);
 
-  //  free        (structBuffer->input);
+    pthread_cond_destroy    (&read_data);
+    pthread_cond_destroy    (&write_data);
+
     free        (structBuffer);
     printf      ("\nCleanup Done!\n");
     
     return 0;
     
 }
+
+
+void *workThread(void *structPointer){
+    
+    Buffer *Buffer = structPointer;
+    *Buffer->input = 0;
+
+    while(strncmp(Buffer->input,"quit",4)){
+        
+       // printf("Thread_1_Id: %ld\n",syscall(SYS_gettid));
+
+        FILE    *outPut =     fopen("outPut.txt","a");
+        
+        fprintf (outPut,"%s", Buffer->input);
+        fclose  (outPut);
+
+        //kjører whileloopen når den får signal
+        
+        pthread_mutex_trylock   (&lock_data);
+        pthread_cond_signal     (&write_data);
+        pthread_cond_wait       (&read_data,&lock_data);
+        pthread_mutex_unlock    (&lock_data);
+    }
+
+    pthread_cond_signal (&write_data);
+    printf              ("\nworkThread is Ready to Join!\n");
+    pthread_exit        (0);  
+}    

@@ -14,28 +14,26 @@ før den avslutter. */
 
 
 
-#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
-#include <netdb.h>
-#include <sys/socket.h>
-//#include <sys/types.h>
 #include <arpa/inet.h>
-#include <linux/in.h>
 
 #define SERVER_PORT 80
 #define MAXLINE 4096
 #define SA struct sockaddr
-#define WEBADDR "77.111.240.75"
-int errorHandling(char * error){
+
+//dette er ipen til addressen eastwillsecurity.com
+//"http://www.eastwillsecurity.com/pg3401/test.html";
+#define SERVERIP "77.111.240.75"
+
+int errorMsg(char * error){
     printf("%s\n",error);
     return 1;
 }
 
 int main(void){
    
-   //"http://www.eastwillsecurity.com/pg3401/test.html";
     int         sockFd, n, sendbytes;
     struct      sockaddr_in servaddr;
     
@@ -44,32 +42,32 @@ int main(void){
     sockFd =    socket(AF_INET,SOCK_STREAM,0);
 
     if(sockFd < 0) 
-        printf("socket not opened properly");
+        errorMsg("\nSocketen ble ikke initialisert riktig\n");
     
     bzero(&servaddr, sizeof(servaddr)); // malloc and memset to 0; swap too this ! 
-    //struct sockaddr_in saAddr = {0};
-    //int iPort = atoi("80");
-   // saAddr.sin_family;
+   
+
     servaddr.sin_family = AF_INET;
     servaddr.sin_port   = htons(SERVER_PORT);//hgons ->> network standard byteorder
-    //connect()
-    if(inet_pton(AF_INET,"77.111.240.75",&servaddr.sin_addr)<=0)
-        errorHandling("convert ip to binary");
+  
 
-    printf("converted ip to binary");
+    if(inet_pton(AF_INET,SERVERIP,&servaddr.sin_addr)<=0)
+        errorMsg("\nproblem med konvertering av ip til binært\n");
+
+    printf("\nipen er konvertert til binært\n");
 
     if(connect(sockFd, (SA*)&servaddr,sizeof(servaddr))<0)
-        errorHandling("error connection to ip");
+        errorMsg("\n feil under tilkobling til ip\n");
 
-    printf("connected to ip");
+    printf("\nkoblet til to ip\n");
 
     sprintf(sendline, "GET /pg3401/test.html HTTP/1.1\r\nHost: eastwillsecurity.com\r\n\r\n");//maybe write here
     sendbytes = strlen(sendline);
 
     if(write(sockFd, sendline, sendbytes)!= sendbytes)
-        errorHandling("error write");
+        errorMsg("\nfeil under sending av header\n");
 
-    printf("wrote to socket");
+    printf("\nheader sent, venter på svar\n");
     memset(recvline,0,MAXLINE);
 
     while ((n=read(sockFd,recvline,MAXLINE-1))>0)
@@ -77,10 +75,10 @@ int main(void){
             printf("%s",recvline);
         }
         if(n<0)
-            errorHandling("error read");
+            errorMsg("\ningen svar fra server!\n");
 
     close(sockFd);
-    printf("read done");
+    printf("\nferdig med å laste siden, avslutter\n");
 
     return 0;
 }
