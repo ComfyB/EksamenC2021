@@ -2,6 +2,7 @@
 
 int main(void)
 {
+    //making a class
     DLL *dll = initDLL();
     int running = 1;
     while (running)
@@ -73,7 +74,7 @@ int menu(DLL *list)
         deleteWithKey(list);
         return 1;
     case '4':
-        printf("\nTotal: %2.f\n", sum(list));
+        printf("\nTotal: %.2f\n", sum(list));
         return 1;
     case '5':
         printList(list);
@@ -109,11 +110,10 @@ void deleteWithKey(DLL *list)
             delNode(list, i);
         i = tmp;
     }
-    free(i);
 }
 void printList(DLL *list)
 {
-    Node *i = initNode();
+    Node *i ;
     printf("*********************************\n");
     printf("navn\tpris\tantall\tvaretotal\n");
     printf("_________________________________\n\n");
@@ -212,6 +212,7 @@ void appendNode(DLL *list, char *navn, float pris, int antall)
         list->tail = newNode;
     }
 } //add a node to the end of the list
+
 void delNode(DLL *list, Node *_delete)
 {
 
@@ -219,6 +220,7 @@ void delNode(DLL *list, Node *_delete)
         return;
     if (list->head == _delete && _delete->NEXT == NULL)
     {
+        list->tail = NULL;
         list->head = NULL;
         free(*_delete->VARENAVN);
         free(_delete);
@@ -245,12 +247,11 @@ void delNode(DLL *list, Node *_delete)
 float sum(DLL *list)
 {
     float sum = 0;
-    Node *i = initNode();
+    Node *i;
 
     for (i = list->head; i != NULL; i = i->NEXT)
         sum += i->PRIS * i->ANTALL;
 
-    free(i);
     return sum;
 } //sum pris på alle varer i listen
 
