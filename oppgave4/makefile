@@ -1,7 +1,7 @@
 # Makefile template
 
 INCLDIR = ./include
-CC = gcc
+CC = gcc -g
 CFLAGS = -O2
 CFLAGS += -I $(INCLDIR)
 

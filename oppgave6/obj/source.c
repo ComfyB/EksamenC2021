@@ -1,84 +1,57 @@
-/* Oppgave 6. Nettverk (20 %)
-Du skal i denne oppgaven lage en enkelt nettleser (browser). Applikasjonen skal hente data fra en reel webserver på internett, 
-hvilket betyr at maskinen (og VMen hvis du kjører Linux i en VmWare maskin slik vi har brukt i undervisningen) må ha internett tilgang
-når du løser oppgaven.
-Oppgaven skal ikke løses ved bruk av Curl eller andre tredjepartsbiblioteker, og skal ikke basere seg på wget eller tilsvarende fra 
-operativsystemet – kun bruk av Sockets slik vi har lært på forelesning 11 om Nettverk vil gi poeng på oppgaven.
-Applikasjonen (den enkle browseren) skal laste ned følgende URL:
-   «http://www.eastwillsecurity.com/pg3401/test.html»
-Applikasjonen kan startes uten parameter, og main metoden kan hardkode protokoll TCP, port nummer 80 og server manuelt (du kan også
-hardkode IP adressen til www.eastwillsecurity.com hvis du ønsker). Klient applikasjonen skal CONNECTE til oppgitt port på webserveren, 
-og sende en HTTP GET pakke til URLen som oppgitt over.
-Klient applikasjonen skal så lese svaret den får tilbake fra webserveren, og skrive ut websiden som kommer tilbake i terminal vinduet, 
-før den avslutter. */
+#include "source.h"
 
+int main(void)
+{
 
+    int sockFd, n, sendbytes;
+    struct sockaddr_in servaddr;
 
-#include <stdio.h>
-#include <string.h>
-#include <unistd.h>
-#include <arpa/inet.h>
+    char sendline[MAXLINE];
+    char recvline[MAXLINE];
+    sockFd = socket(AF_INET, SOCK_STREAM, 0);
 
-#define SERVER_PORT 80
-#define MAXLINE 4096
-#define SA struct sockaddr
-
-//dette er ipen til addressen eastwillsecurity.com
-//"http://www.eastwillsecurity.com/pg3401/test.html";
-#define SERVERIP "77.111.240.75"
-
-int errorMsg(char * error){
-    printf("%s\n",error);
-    return 1;
-}
-
-int main(void){
-   
-    int         sockFd, n, sendbytes;
-    struct      sockaddr_in servaddr;
-    
-    char        sendline[MAXLINE];
-    char        recvline[MAXLINE];
-    sockFd =    socket(AF_INET,SOCK_STREAM,0);
-
-    if(sockFd < 0) 
+    if (sockFd < 0)
         errorMsg("\nSocketen ble ikke initialisert riktig\n");
-    
-    bzero(&servaddr, sizeof(servaddr)); // malloc and memset to 0; swap too this ! 
-   
+
+    memset(&servaddr, 0, sizeof(servaddr));
 
     servaddr.sin_family = AF_INET;
-    servaddr.sin_port   = htons(SERVER_PORT);//hgons ->> network standard byteorder
-  
+    servaddr.sin_port = htons(SERVER_PORT); //hgons ->> network standard byteorder
 
-    if(inet_pton(AF_INET,SERVERIP,&servaddr.sin_addr)<=0)
+    if (inet_pton(AF_INET, SERVERIP, &servaddr.sin_addr) <= 0)
         errorMsg("\nproblem med konvertering av ip til binært\n");
 
     printf("\nipen er konvertert til binært\n");
 
-    if(connect(sockFd, (SA*)&servaddr,sizeof(servaddr))<0)
+    if (connect(sockFd, (SA *)&servaddr, sizeof(servaddr)) < 0)
         errorMsg("\n feil under tilkobling til ip\n");
 
     printf("\nkoblet til to ip\n");
 
-    sprintf(sendline, "GET /pg3401/test.html HTTP/1.1\r\nHost: eastwillsecurity.com\r\n\r\n");//maybe write here
+    sprintf(sendline, "GET /pg3401/test.html HTTP/1.1\r\nHost: eastwillsecurity.com\r\n\r\n"); //maybe write here
     sendbytes = strlen(sendline);
 
-    if(write(sockFd, sendline, sendbytes)!= sendbytes)
+    if (write(sockFd, sendline, sendbytes) != sendbytes)
         errorMsg("\nfeil under sending av header\n");
 
     printf("\nheader sent, venter på svar\n");
-    memset(recvline,0,MAXLINE);
+    memset(recvline, 0, MAXLINE);
 
-    while ((n=read(sockFd,recvline,MAXLINE-1))>0)
-        {
-            printf("%s",recvline);
-        }
-        if(n<0)
-            errorMsg("\ningen svar fra server!\n");
+    while ((n = read(sockFd, recvline, MAXLINE - 1)) > 0)
+    {
+        printf("%s", recvline);
+    }
+    if (n < 0)
+        errorMsg("\ningen svar fra server!\n");
 
     close(sockFd);
     printf("\nferdig med å laste siden, avslutter\n");
 
     return 0;
+}
+
+int errorMsg(char *error)
+{
+    printf("%s\n", error);
+    return 1;
 }
