@@ -137,9 +137,9 @@ void handleInput(DLL *list)
 {
 
     char *navn = malloc(sizeof(char) * 25);
-
-    if (navn == NULL)
-        exit(1);
+    if (navn == NULL){
+        printf("error while allocation of navn variable");
+        exit(1);}
 
     float pris;
     int antall;

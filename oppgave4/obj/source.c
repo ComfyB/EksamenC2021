@@ -60,7 +60,7 @@ MYHTTP *ProcessHttpHeader(char *pszHttp)
       else
          strncpy(pHttp->szServer, pszPtr, 15); //dis fixed
 
-      //pszPtr[strlen(pHttp->szServer)] = '\n';  //gives has no protection for overflow
+      //pszPtr[strlen(pHttp->szServer)] = '\n';  // has no protection for overflow
    }
 
    pszPtr = strstr(pszHttp, "Last-Modified");
@@ -111,11 +111,11 @@ int main(void)
 
    m = ProcessHttpHeader("HTTP/1.1 404 Not Found\r\nDate: Thu, 04 Nov 2021 22:27:23 GMT\r\nServer: Apache\r\nContent-Length: 196\r\nLast-Modified: Wed, 21 Oct 2021 01:23:45 GMT\r\nContent-Type: text/html; charset=iso-8859-1\r\nX-Varnish: 976359640\r\nAge: 0\r\nVia: 1.1 varnish (Varnish/7.0)\r\nConnection: keep-alive");
 
-   printf("content-length: %d\n", m->iContentLength);
-   printf("http - code: %d\n", m->iHttpCode);
-   printf("Last-modified: %s\n", m->szLastModified);
+   printf("Content-Length: %d\n", m->iContentLength);
+   printf("Http - code: %d\n", m->iHttpCode);
+   printf("Last-Modified: %s\n", m->szLastModified);
    printf("Is success?: %d\n", m->bIsSuccess);
-   printf("Content type: %s\n", m->szContentType);
+   printf("Content-Type: %s\n", m->szContentType);
    printf("Server: %s\n", m->szServer);
 
    free(m);

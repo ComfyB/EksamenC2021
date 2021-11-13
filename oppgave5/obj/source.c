@@ -4,13 +4,23 @@ int main(void)
 {
     char *tmpInput;
     tmpInput = malloc(sizeof(char) * 11);
+    if (tmpInput == NULL)
+    {
+        printf("error allocation memory for tmpInput");
+        return (1);
+    }
     memset(tmpInput, 0, sizeof(char) * 11);
 
     pthread_mutex_init(&lock_data, NULL);
     pthread_cond_init(&read_data, NULL);
     pthread_cond_init(&write_data, NULL);
 
-    Buffer t *structBuffer = malloc(sizeof(Buffer));
+    Buffer *structBuffer = malloc(sizeof(Buffer));
+    if (structBuffer == NULL)
+    {
+        printf("error allocation memory for structBuffer");
+        return (1);
+    }
     memset(structBuffer, 0, sizeof(Buffer));
 
     pthread_t thread_1;
@@ -69,6 +79,6 @@ void *workThread(void *structPointer)
     }
 
     pthread_cond_signal(&write_data);
-    printf("\nworkThread is Ready to Join!\n");
+    printf("\n--workThread is Ready to Join!--\n");
     pthread_exit(0);
 }

@@ -1,9 +1,4 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <ctype.h>
 
-void letterOccurenceCounter();
 int main(void)
 {
     int ch, ch2;
