@@ -30,27 +30,62 @@ typedef struct Node{
     struct Node* NEXT;
     struct Node* PREV;
 }Node;
+typedef struct DLL
+{
+    Node* head;
+    Node* tail;
+}DLL;
 
 
-void queue(Node **pheadNode, char* navn, float pris, int antall); //add a node to the end of the list
-void printList(Node **pheadNode); //print all nodes into terminal
-void deQueue(Node *pheadNode); //delete last added node
-void searchAndDelete(Node **pheadNode); //delete all nodes with name "*Input*"
-float sum(Node **pheadNode); //sum pris på alle varer i listen
-void menu(Node *pheadNode);
-void handleInput(Node **pheadNode);
-void cleanUpAndExit(Node *pheadNode);
 
-int main(){
-    Node *pheadNode = NULL;
-    
-    menu(pheadNode);
-    free(pheadNode);
+
+DLL* initDLL(void);
+Node * initNode(void);
+
+float sum(DLL *list);
+
+int menu(DLL *list);
+void printList(DLL *list);
+void handleInput(DLL *list);
+void cleanExit(DLL *list);
+void deleteWithKey(DLL *list);
+void delNode(DLL* list, Node *delete);
+void * appendNode(DLL *list, char* navn, float pris, int antall);
+
+
+DLL * initDLL(void){
+    DLL *newList = malloc(sizeof(*newList));
+    if(newList == NULL){
+        printf("error allocation mem for dll");
+    }
+    memset(newList, 0 ,sizeof(*newList));
+    newList->head = NULL;
+    newList->tail = NULL;
+    return newList;
+}
+
+int main(void){
+    DLL *dll = initDLL();
+    int running = 1;
+    while(running){
+        running = menu(dll);
+    }
+    free(dll);
 return 0;
 }
 
+Node * initNode(void){
+    
+    Node* newNode = malloc(sizeof(*newNode));
+        if(newNode==NULL){
+            printf("error allocation of mem for node exiting!");
+            exit(1);}
+    memset(newNode,0,sizeof(*newNode));
 
-void menu(Node *pheadNode){
+    return newNode;
+}
+
+int menu(DLL *list){
     char choice;
     int inputOk;
         printf("\n*********************\n");
@@ -73,40 +108,78 @@ void menu(Node *pheadNode){
         }
         switch (choice){
             case '1':
-                    handleInput(&pheadNode);
-                    break;
+                    handleInput(list);
+                    return 1;
+                    
             case '2':
-                    deQueue(pheadNode);
-                    break;                
+                    delNode(list,list->tail);
+                    return 1;
             case '3':
-                    searchAndDelete(&pheadNode);
-                    break;
+                    deleteWithKey(list);
+                    return 1;
             case '4':
-                    printf("%2.f",sum(&pheadNode));
-
-                    break;
+                    printf("\nTotal: %2.f\n",sum(list));
+                    return 1;
             case '5':
-                    printList(&pheadNode);
-                    break;
+                    printList(list);
+                    return 1;
             case '6':
-                    cleanUpAndExit(pheadNode);
-                    break;
+                   cleanExit(list);
+                   return 0;
             default:
                     printf("something went wrong");   
-                    cleanUpAndExit(pheadNode); 
+                    //cleanUpAndExit(pheadNode); 
         }
 }
+void deleteWithKey(DLL *list){
+    if(list->head ==NULL){
+        printf("\nlisten er allerede tom!\n");
+        return;
+    }
+    Node *i=initNode();
+    Node *tmp=initNode();
+    char key[25];
+    if(scanf("%s",key));
+    for (i = list->head; i != NULL; i = tmp->NEXT){
+        if(strcmp(*i->VARENAVN,key)==0){
+            tmp->NEXT=i->NEXT;
+            printf("deleting: %s",key);
+            delNode(list,i);
+        }
+            
+    
+    } 
+}
+void printList(DLL *list){
+    Node *i;
+    printf("*********************************\n");
+    printf("navn\tpris\tantall\tvaretotal\n");
+    printf("_________________________________\n\n");
 
+    for (i = list->head; i != NULL; i = i->NEXT){
+  
+        printf("%s\t", *i->VARENAVN);
+        printf("%.2f\t", i->PRIS); 
+        printf("%d\t", i->ANTALL); 
+        printf("%.2f\n",(i->PRIS * i->ANTALL));
+    }
+    printf("_________________________________\n\n");
 
-void handleInput(Node **pheadNode){
+    printf("\033[0;31m\t\tTotal \t%.2f\n\033[0;0m",sum(list));
+    printf("*********************************\n");
+    
+} //print all nodes into terminal
 
-    char * navn = malloc(sizeof(char)*25);
+void handleInput(DLL *list){
+
+    char navn [25];
+    if(navn==NULL)
+        exit(1);
     float pris;
     int antall;
     int inputOk;
     int i=0;
-   // char clearBuff[255];
-//kdjsadk
+
     printf("\n*********************\n");
     printf("Oppgi et varenavn og trykk enter:  ");
     inputOk = scanf("%s", navn);
@@ -128,7 +201,7 @@ void handleInput(Node **pheadNode){
             
         
     printf("\nOppgi antall varer og trykk enter:  ");
-     while(1){
+    while(1){
                 
                 if(scanf("%d", &antall)) //,printf("\n")
                     break;
@@ -143,176 +216,84 @@ void handleInput(Node **pheadNode){
                     printf("please insert a valid number:\n");
             }
             
-    printf("\n%d  %s for kr %.2f hver\n",antall,navn,pris);
-    if(pheadNode!=NULL) 
-        queue(pheadNode, navn, pris, antall);
-    else
-        queue(NULL, navn, pris, antall);
+       
+        
+    appendNode(list, navn, pris, antall);
+    
+    
 
 }
 
 
-void queue(Node **pheadNode, char* navn, float pris, int antall){
-    Node *newNode;    
-    newNode = malloc(sizeof(newNode));
+void *appendNode(DLL* list, char* navn, float pris, int antall){
+      
+    Node *newNode = initNode();
+    
     *newNode->VARENAVN = navn;
     newNode->PRIS = pris;
     newNode->ANTALL = antall;
-    //check if there's no Nodes
-        if(*pheadNode == NULL){ 
-            newNode->PREV = NULL;
-            newNode->NEXT = NULL;
-            *pheadNode = newNode;
-            printf("%f",newNode->PRIS);
-            printf("nullNode");
-            menu(*pheadNode);
-        } 
-    
-    Node *i = *pheadNode;   
-    //go to end of list
-    while (i->NEXT != NULL){
-        i=i->NEXT;
-    } 
-    //Set temp next to newnode
-    i->NEXT = newNode;
-    newNode->PREV = i;
-    
-    //printf("%f",newNode->PRIS);
-    menu(*pheadNode);
-} //add a node to the end of the list
 
-void printList(Node **pheadNode){
-    Node *i;
-    printf("*********************************\n");
-    printf("navn\tpris\tantall\tvaretotal\n");
-    printf("_________________________________\n\n");
-
-    for (i = *pheadNode; i != NULL; i = i->NEXT){
-  
-        printf("%s\t", *i->VARENAVN);
-        printf("%.2f\t", i->PRIS); 
-        printf("%d\t", i->ANTALL); 
-        printf("%.2f\n",(i->PRIS * i->ANTALL));
-  //  printf("\n*********************\n");
+    
+    if(list->head == NULL){
+        newNode->NEXT = NULL;
+        newNode->PREV = NULL;
+        list->head = newNode;
+        list->tail = newNode;
+    }else{
+        list->tail->NEXT = newNode;
+        newNode->PREV=list->tail;
+        newNode->NEXT=NULL;
+        list->tail = newNode;
     }
-printf("_________________________________\n\n");
-
-printf("\033[0;31m\t\tTotal \t%.2f\n\033[0;0m",sum(pheadNode));
-          printf("*********************************\n");
-
-menu(*pheadNode);
-} //print all nodes into terminal
    
-void deQueue(Node *pheadNode){
+} //add a node to the end of the list
+void delNode(DLL *list, Node *delete){
 
- //Need to check if empty!! 
-    if(pheadNode == NULL){
-        printf ("Listen er tom!\n");
-        menu(NULL);
-    } 
-    Node *i= malloc(sizeof(Node));
-    memset(i,0,sizeof(Node));
-    i = pheadNode;
+    if(list->head == NULL || delete == NULL)
+        return;
+    if(list->head == delete && delete->NEXT == NULL){
+        list->head = NULL;
+        free(delete);
+        return;
+    }
+    if(list->head == delete){
+        list->head = delete->NEXT;
+        delete->NEXT->PREV=NULL;
+    }    
+    
+    if(delete->NEXT != NULL){
+        delete->NEXT->PREV = delete->PREV;
 
-    if(i->NEXT == NULL){
-        free(i);
-        menu(NULL);
-    }
-    while(i->NEXT != NULL) {
-        i = i->NEXT;
-    }
-    if(i->NEXT==NULL){
-        i->PREV->NEXT = NULL;
-        free(i);
-        menu(pheadNode);
-    }
+    }    
+    if(delete->PREV != NULL)
+        delete->PREV->NEXT = delete->NEXT;
+
+    if(delete->NEXT == NULL)
+        list->tail= delete->PREV;
+
+    free(delete); 
     
 
-} //delete last added node
-
-void searchAndDelete(Node **pheadNode){
-    int inputOk; 
-    int i =0;
-    char searchTerm[25];
-    while(1){
-                
-                if(scanf("%s", searchTerm)) //,printf("\n")
-                    break;
-                //empty stdin so we get a proper input.
-                while(fgetc(stdin)== 1){
-                    i=0;
-                }
-                i++;
-                if(i%3 == 0||i==0)
-                    printf(". \n");
-                if(i==1)
-                    printf("please insert a valid string:\n");
-            }
-            
-    //trenger input validering! ! ! ! 
-   // inputOk = scanf("%s", searchTerm);
-     // Store head node
-    if (*pheadNode != NULL){
-
-        Node *i = *pheadNode, *prev = NULL; //node i = temporary
-
-    
-                            
-        while (i->NEXT != NULL)
-        {
-            Node *next = i->NEXT; //i er her head -- next er no2
-
-    
-            if(strcmp(*i->VARENAVN, searchTerm)==0){
-                if(i->PREV != NULL)
-                    i->PREV = next->PREV;
-                
-                free(i);
-                if(prev)
-                    prev->NEXT = next;
-                else
-                    *pheadNode = next;
-            }else
-                prev = i;
-            
-            i=next;
-    
-        }
-        menu(*pheadNode);
-    }
-
-    else{
-        printf("Listen er allerede tom! \n");
-        menu(NULL);
-    }
-
-
-} //delete all nodes with name "*Input*"
-
-float sum(Node **pheadNode){
+}
+float sum(DLL* list){
     float sum = 0;
-    Node *i = malloc(sizeof(Node));
-    memset(i, 0, sizeof(Node));
-    if(pheadNode == NULL)
-        return 0;
-    for (i = *pheadNode; i != NULL; i = i->NEXT)
+    Node *i = initNode();
+
+    for (i = list->head; i != NULL; i = i->NEXT)
         sum+=i->PRIS*i->ANTALL;
     
-    //printf("%.2f",sum);
-    //menu(*pheadNode);
     free(i);
     return sum;
 } //sum pris på alle varer i listen
 
 
-void cleanUpAndExit(Node *pheadNode){
-  //  Node *tmp = *pheadNode;
-    while(pheadNode!= NULL){
-        Node *tmp = pheadNode->NEXT;
-        free(pheadNode);
-        pheadNode = tmp;
-    
-    }
-    exit(0);
-    
+void cleanExit(DLL* list){
+    Node *i;
+    Node *tmp = initNode();
+    for (i = list->head; i != NULL; i = tmp->NEXT){
+            tmp->NEXT=i->NEXT;
+            delNode(list,i);
+        }
+    free(tmp);
 }
+ 

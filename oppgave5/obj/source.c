@@ -45,9 +45,6 @@ typedef struct Buffer{
 }Buffer;
 
 
-
- 
-
 void *workThread(void *structPointer);
     
 
