@@ -50,7 +50,7 @@ void handleInput(DLL *list);
 void cleanExit(DLL *list);
 void deleteWithKey(DLL *list);
 void delNode(DLL* list, Node *delete);
-void * appendNode(DLL *list, char* navn, float pris, int antall);
+void appendNode(DLL *list, char* navn, float pris, int antall);
 
 
 DLL * initDLL(void){
@@ -87,7 +87,6 @@ Node * initNode(void){
 
 int menu(DLL *list){
     char choice;
-    int inputOk;
         printf("\n*********************\n");
         printf(  "*       Menu        *");
         printf("\n*********************\n");
@@ -99,7 +98,7 @@ int menu(DLL *list){
         printf("5. Kvittering\n");
         printf("6. Exit program\n");
         while(1){
-            inputOk = scanf("%c", &choice);
+            if(scanf("%c", &choice));
             
             if(choice >='1' && choice <='6')
                 break;
@@ -124,40 +123,43 @@ int menu(DLL *list){
                     printList(list);
                     return 1;
             case '6':
-                   cleanExit(list);
-                   return 0;
+                    cleanExit(list);
+                    return 0;
             default:
                     printf("something went wrong");   
-                    //cleanUpAndExit(pheadNode); 
+                    cleanExit(list);
+                    return 0; 
         }
+        cleanExit(list);
+        return 0;
 }
 void deleteWithKey(DLL *list){
     if(list->head ==NULL){
         printf("\nlisten er allerede tom!\n");
         return;
     }
-    Node *i=initNode();
-    Node *tmp=initNode();
+    Node *i;
+    Node *tmp;
     char key[25];
     if(scanf("%s",key));
-    for (i = list->head; i != NULL; i = tmp->NEXT){
-        if(strcmp(*i->VARENAVN,key)==0){
-            tmp->NEXT=i->NEXT;
-            printf("deleting: %s",key);
+    i=list->head;
+    while(i->NEXT!=NULL){
+        tmp=i->NEXT;
+        if(strcmp(*i->VARENAVN, key)==0)
             delNode(list,i);
-        }
-            
-    
-    } 
+        i=tmp;
+    }
+
+   free(i);
 }
 void printList(DLL *list){
-    Node *i;
+    Node *i=initNode();
     printf("*********************************\n");
     printf("navn\tpris\tantall\tvaretotal\n");
     printf("_________________________________\n\n");
 
     for (i = list->head; i != NULL; i = i->NEXT){
-  
+
         printf("%s\t", *i->VARENAVN);
         printf("%.2f\t", i->PRIS); 
         printf("%d\t", i->ANTALL); 
@@ -172,17 +174,17 @@ void printList(DLL *list){
 
 void handleInput(DLL *list){
 
-    char navn [25];
+    char* navn = malloc(sizeof(char)*25);
+    
     if(navn==NULL)
         exit(1);
     float pris;
     int antall;
-    int inputOk;
     int i=0;
 
     printf("\n*********************\n");
     printf("Oppgi et varenavn og trykk enter:  ");
-    inputOk = scanf("%s", navn);
+    if(scanf("%s", navn));
     printf("\nOppgi en pris og trykk enter:  ");
             while(1){
                 
@@ -217,7 +219,7 @@ void handleInput(DLL *list){
             }
             
        
-        
+    
     appendNode(list, navn, pris, antall);
     
     
@@ -225,8 +227,9 @@ void handleInput(DLL *list){
 }
 
 
-void *appendNode(DLL* list, char* navn, float pris, int antall){
-      
+void appendNode(DLL* list, char* navn, float pris, int antall){
+    
+
     Node *newNode = initNode();
     
     *newNode->VARENAVN = navn;
@@ -245,7 +248,6 @@ void *appendNode(DLL* list, char* navn, float pris, int antall){
         newNode->NEXT=NULL;
         list->tail = newNode;
     }
-   
 } //add a node to the end of the list
 void delNode(DLL *list, Node *delete){
 
@@ -253,6 +255,7 @@ void delNode(DLL *list, Node *delete){
         return;
     if(list->head == delete && delete->NEXT == NULL){
         list->head = NULL;
+        free(*delete->VARENAVN);
         free(delete);
         return;
     }
@@ -270,7 +273,7 @@ void delNode(DLL *list, Node *delete){
 
     if(delete->NEXT == NULL)
         list->tail= delete->PREV;
-
+    free(*delete->VARENAVN);
     free(delete); 
     
 
