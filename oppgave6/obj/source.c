@@ -2,7 +2,24 @@
 
 int main(void)
 {
-
+    int i;
+    struct hostent *add = gethostbyname("eastwillsecurity.com");
+    struct in_addr **addr_list;
+    addr_list = (struct in_addr **)add->h_addr_list;
+    char* ip = malloc(sizeof(char)*33);
+    if (add)
+    {
+        for (i = 0; addr_list[i] != NULL; i++)
+        {
+            strcpy(ip, inet_ntoa(*addr_list[i]));
+            printf("ip found: %s", ip);
+        }
+    }
+    else
+    {
+        ip = "77.111.240.75";
+        printf("ip not found, deafulting to hardcoded ip.");
+    }
     int sockFd, n, sendbytes;
     struct sockaddr_in servaddr;
 
@@ -18,7 +35,7 @@ int main(void)
     servaddr.sin_family = AF_INET;
     servaddr.sin_port = htons(SERVER_PORT); //hgons ->> network standard byteorder
 
-    if (inet_pton(AF_INET, SERVERIP, &servaddr.sin_addr) <= 0)
+    if (inet_pton(AF_INET, ip, &servaddr.sin_addr) <= 0)
         errorMsg("\nproblem med konvertering av ip til binært\n");
 
     printf("\nipen er konvertert til binært\n");
@@ -46,7 +63,7 @@ int main(void)
 
     close(sockFd);
     printf("\nferdig med å laste siden, avslutter\n");
-
+    free(ip);
     return 0;
 }
 

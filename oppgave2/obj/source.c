@@ -1,3 +1,4 @@
+#include "source.h"
 
 int main(void)
 {
@@ -47,7 +48,7 @@ void letterOccurenceCounter()
     {
         tmp = toupper(c);
         tmp = tmp - 'A';
-        if (tmp >= 0 && tmp <= 28)
+        if (tmp >= 0 && tmp <= 26)
             counter[tmp] += 1;
     }
     //op
