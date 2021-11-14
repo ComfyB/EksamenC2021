@@ -7,9 +7,9 @@
 
 typedef struct Node
 {
-    char *VARENAVN[25];
-    int ANTALL;
-    float PRIS;
+    char *ITEMNAME[25];
+    int QUANTITY;
+    float PRICE;
     struct Node *NEXT;
     struct Node *PREV;
 } Node;
@@ -26,11 +26,11 @@ DLL *initDLL(void);
 Node *initNode(void);
 
 void printList(DLL *list);
-void handleInput(DLL *list);
+void inputValidation(DLL *list);
 void cleanExit(DLL *list);
 void deleteWithKey(DLL *list);
 void delNode(DLL *list, Node *_delete);
-void appendNode(DLL *list, char *navn, float pris, int antall);
+void appendNode(DLL *list, char *name, float price, int quantity);
 float sum(DLL *list);
 
 #endif
