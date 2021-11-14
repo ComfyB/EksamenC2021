@@ -10,7 +10,7 @@
 
 #define SERVER_PORT 80
 #define MAXLINE 4096
-#define SA struct sockaddr
+#define SOCKETADDRESS struct sockaddr
 
 #define SERVERIP "77.111.240.75"
 

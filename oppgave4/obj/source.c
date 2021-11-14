@@ -55,11 +55,16 @@ MYHTTP *ProcessHttpHeader(char *pszHttp)
       copyLength = 0;
       while (pszPtr[copyLength] != '\n') //Checks where newline character. and gives copylength a value
          copyLength++;
-      if (copyLength < 16)                             //checks if the string is longer than the size of the memeory allocated in the struct. if it is it will only copy the first 15 characters
+      if (copyLength < 16)
+      {                                                //checks if the string is longer than the size of the memeory allocated in the struct. if it is it will only copy the first 15 characters
          strncpy(pHttp->szServer, pszPtr, copyLength); //dis fixed
+         pHttp->szServer[copyLength - 1] = 0;          //zero terminate the string
+      }
       else
+      {
          strncpy(pHttp->szServer, pszPtr, 15); //dis fixed
-
+         pHttp->szServer[14] = 0;
+      }
       //strncpy(pHttp->szServer, pszPtr,15);
       //strchr(pszPtr, '\n')[0] = 0;
       //pszPtr[strlen(pHttp->szServer)] = '\n';  // has no protection for overflow and crashes the program.
@@ -71,14 +76,19 @@ MYHTTP *ProcessHttpHeader(char *pszHttp)
       pszPtr += 13;
       while (!isalpha(pszPtr[0]))
          pszPtr++;
-
       copyLength = 0;
-      while (pszPtr[copyLength] != '\n')
+      while (pszPtr[copyLength] != '\n') //Checks where newline character. and gives copylength a value
          copyLength++;
       if (copyLength < 30)
-         strncpy(pHttp->szLastModified, pszPtr, copyLength);
+      {                                                      //checks if the string is longer than the size of the memeory allocated in the struct. if it is it will only copy the first 15 characters
+         strncpy(pHttp->szLastModified, pszPtr, copyLength); //dis fixed
+         pHttp->szLastModified[copyLength - 1] = 0;          //0terminated string
+      }
       else
-         strncpy(pHttp->szLastModified, pszPtr, 29);
+      {
+         strncpy(pHttp->szLastModified, pszPtr, 29); //dis fixed
+         pHttp->szLastModified[copyLength - 1] = 0;  //0-terminating the  string
+      }
    }
 
    pszPtr = strstr(pszHttp, "Content-Type");
@@ -87,21 +97,26 @@ MYHTTP *ProcessHttpHeader(char *pszHttp)
       pszPtr += 13;
       while (!isalpha(pszPtr[0]))
          pszPtr++;
-      copyLength = 0;
-      while (pszPtr[copyLength] != '\n')
-         copyLength++;
-      if (copyLength < 30)
-         strncpy(pHttp->szContentType, pszPtr, copyLength); //
-      else
-         strncpy(pHttp->szContentType, pszPtr, 15); // 
-         
-     /*strchr(pszPtr, '\n')[0] = 0; //bad permisssions on mem access
-      strncpy(pHttp->szContentType, pszPtr, 15);
-      pszPtr[strlen(pHttp->szContentType)] = '\n'; //bad permissons for mapped region */
-   }
-  
 
-   
+      copyLength = 0;
+      while (pszPtr[copyLength] != '\n') //Checks where newline character. and gives copylength a value
+         copyLength++;
+      if (copyLength < 16)
+      {                                                     //checks if the string is longer than the size of the memeory allocated in the struct. if it is it will only copy the first 15 characters
+         strncpy(pHttp->szContentType, pszPtr, copyLength); //dis fixed
+         pHttp->szContentType[copyLength - 1] = 0;
+      }
+      else
+      {
+         strncpy(pHttp->szContentType, pszPtr, 15); //dis fixed
+         pHttp->szContentType[copyLength - 1] = 0;
+      }
+
+      /*strchr(pszPtr, '\n')[0] = 0;                   //bad permisssions on mem access.
+      strncpy(pHttp->szContentType, pszPtr, 15);
+      pszPtr[strlen(pHttp->szContentType)] = '\n';    //bad permissons for mapped region */
+
+   } //content-type parse fineshed
 
    pszPtr = strstr(pszHttp, "Content-Length");
    if (pszPtr)
@@ -110,9 +125,9 @@ MYHTTP *ProcessHttpHeader(char *pszHttp)
       while (!isdigit(pszPtr[0]))
          pszPtr++;
       pHttp->iContentLength = atoi(pszPtr); //this one was taking pszHttp as input and not the correct pointer. which led to it not parsing content length
-   }                                         //easy swap with pszPtr and the funciton works as intended.
+   }                                        //easy swap with pszPtr and the funciton works as intended.
    return pHttp;
-}//processhttphead() end;
+} //processhttphead() end;
 int main(void)
 {
    MYHTTP *m = (MYHTTP *)malloc(sizeof(MYHTTP)); //initalize ste struct to store the data. return from the  header parsing function.

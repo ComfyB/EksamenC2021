@@ -3,72 +3,75 @@
 int main(void)
 {
     int i;
-    struct hostent *add = gethostbyname("eastwillsecurity.com");
-    struct in_addr **addr_list;
-    addr_list = (struct in_addr **)add->h_addr_list;
-    char* ip = malloc(sizeof(char)*33);
+    struct hostent *add = gethostbyname("eastwillsecurity.com"); //get host by name, will return a struct with addr list  "database entry of a host"
+    struct in_addr **addr_list;                                  //Make address into network byte order by combining NET with host local addr.
+    char *ip = malloc(sizeof(char *) * 33);
+
     if (add)
     {
+        addr_list = (struct in_addr **)add->h_addr_list; //h_addr_list gives a alist of returned host values
+
         for (i = 0; addr_list[i] != NULL; i++)
         {
-            strcpy(ip, inet_ntoa(*addr_list[i]));
+            strcpy(ip, inet_ntoa(*addr_list[i])); //inet_ntoa converts ip to string and strcpy copies it into a variable called ip.
             printf("ip found: %s", ip);
         }
     }
-    else
+    else //if hosts is not found we go to a hardcoded ip to the server.
     {
-        ip = "77.111.240.75";
+        strcpy(ip, SERVERIP);
         printf("ip not found, deafulting to hardcoded ip.");
-    }
-    int sockFd, n, sendbytes;
-    struct sockaddr_in servaddr;
+    } //end of the part used to get ip from host.
 
-    char sendline[MAXLINE];
-    char recvline[MAXLINE];
-    sockFd = socket(AF_INET, SOCK_STREAM, 0);
+    int socketConnection, n, sendbytes;
+    struct sockaddr_in serveraddress;
 
-    if (sockFd < 0)
+    char sendBuffer[MAXLENGTH]; //arrays with macro maxline of 4046 for recieving and sending data.
+    char recvBuffer[MAXLENGTH];
+    socketConnection = socket(AF_INET, SOCK_STREAM, 0); //create the socket
+
+    if (socketConnection < 0)
         errorMsg("\nSocketen ble ikke initialisert riktig\n");
 
-    memset(&servaddr, 0, sizeof(servaddr));
+    memset(&serveraddress, 0, sizeof(serveraddress));
 
-    servaddr.sin_family = AF_INET;
-    servaddr.sin_port = htons(SERVER_PORT); //hgons ->> network standard byteorder
+    serveraddress.sin_family = AF_INET;
+    serveraddress.sin_port = htons(SERVER_PORT); //htons ->> network standard byteorder little endian /big endian for portability
 
-    if (inet_pton(AF_INET, ip, &servaddr.sin_addr) <= 0)
+    if (inet_pton(AF_INET, ip, &serveraddress.sin_addr) <= 0) //converting address into binary representation of the address with int_pton
         errorMsg("\nproblem med konvertering av ip til binært\n");
 
     printf("\nipen er konvertert til binært\n");
 
-    if (connect(sockFd, (SA *)&servaddr, sizeof(servaddr)) < 0)
+    if (connect(socketConnection, (SOCKETADDRESS *)&serveraddress, sizeof(serveraddress)) < 0) //create the connection to the socket
         errorMsg("\n feil under tilkobling til ip\n");
 
     printf("\nkoblet til to ip\n");
 
-    sprintf(sendline, "GET /pg3401/test.html HTTP/1.1\r\nHost: eastwillsecurity.com\r\n\r\n"); //maybe write here
-    sendbytes = strlen(sendline);
+    sprintf(sendBuffer, "GET /pg3401/test.html HTTP/1.1\r\nHost: eastwillsecurity.com\r\n\r\n"); //writes the header into sendbuffer
+    sendbytes = strlen(sendBuffer);
 
-    if (write(sockFd, sendline, sendbytes) != sendbytes)
+    if (write(socketConnection, sendBuffer, sendbytes) != sendbytes) //writes through the socket a get req to the server.
         errorMsg("\nfeil under sending av header\n");
 
     printf("\nheader sent, venter på svar\n");
-    memset(recvline, 0, MAXLINE);
+    memset(recvBuffer, 0, MAXLENGTH); //remove old trash from memory
 
-    while ((n = read(sockFd, recvline, MAXLINE - 1)) > 0)
+    while ((n = read(socketConnection, recvBuffer, MAXLENGTH - 1)) > 0) //reads the recieved data from the server. then prints to terminal
     {
-        printf("%s", recvline);
+        printf("%s", recvBuffer);
     }
     if (n < 0)
         errorMsg("\ningen svar fra server!\n");
 
-    close(sockFd);
+    close(socketConnection); //cleanup
     printf("\nferdig med å laste siden, avslutter\n");
-    free(ip);
+    free(ip); //free the malloc from start.
     return 0;
-}
-
+} //main() end
+//function that prints errormsg and returns 1
 int errorMsg(char *error)
 {
     printf("%s\n", error);
     return 1;
-}
+} //errorMsg() end
