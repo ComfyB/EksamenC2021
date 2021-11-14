@@ -48,7 +48,7 @@ int main(void)
 
     printf("\nkoblet til to ip\n");
 
-    sprintf(sendBuffer, "GET /pg3401/test.html HTTP/1.1\r\nHost: eastwillsecurity.com\r\n\r\n"); //writes the header into sendbuffer
+    sprintf(sendBuffer, "GET /pg3401/test.html HTTP/1.1\r\nConnection: close\r\nHost: eastwillsecurity.com\r\n\r\n"); //writes the header into sendbuffer
     sendbytes = strlen(sendBuffer);
 
     if (write(socketConnection, sendBuffer, sendbytes) != sendbytes) //writes through the socket a get req to the server.
