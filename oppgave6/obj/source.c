@@ -20,7 +20,7 @@ int main(void)
     else //if hosts is not found we go to a hardcoded ip to the server.
     {
         strcpy(ip, SERVERIP);
-        printf("ip not found, deafulting to hardcoded ip.");
+        printf("ip not found, defaulting to hardcoded ip.");
     } //end of the part used to get ip from host.
 
     int socketConnection, n, sendbytes;
@@ -54,7 +54,7 @@ int main(void)
     if (write(socketConnection, sendBuffer, sendbytes) != sendbytes) //writes through the socket a get req to the server.
         errorMsg("\nfeil under sending av header\n");
 
-    printf("\nheader sent, venter på svar\n");
+    printf("\nheader sent, venter på svar\n\n");
     memset(recvBuffer, 0, MAXLENGTH); //remove old trash from memory
 
     while ((n = read(socketConnection, recvBuffer, MAXLENGTH - 1)) > 0) //reads the recieved data from the server. then prints to terminal

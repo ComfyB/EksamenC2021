@@ -109,7 +109,7 @@ MYHTTP *ProcessHttpHeader(char *pszHttp)
       else
       {
          strncpy(pHttp->szContentType, pszPtr, 15); //dis fixed
-         pHttp->szContentType[copyLength - 1] = 0;
+         pHttp->szContentType[15] = 0;
       }
 
       /*strchr(pszPtr, '\n')[0] = 0;                   //bad permisssions on mem access.
@@ -130,17 +130,17 @@ MYHTTP *ProcessHttpHeader(char *pszHttp)
 } //processhttphead() end;
 int main(void)
 {
-   MYHTTP *m = (MYHTTP *)malloc(sizeof(MYHTTP)); //initalize ste struct to store the data. return from the  header parsing function.
+   MYHTTP *pstHTTP = (MYHTTP *)malloc(sizeof(MYHTTP)); //initalize ste struct to store the data. return from the  header parsing function.
 
-   m = ProcessHttpHeader("HTTP/1.1 404 Not Found\r\nDate: Thu, 04 Nov 2021 22:27:23 GMT\r\nServer: Apache\r\nContent-Length: 196\r\nLast-Modified: Wed, 21 Oct 2021 01:23:45 GMT\r\nContent-Type: text/html; charset=iso-8859-1\r\nX-Varnish: 976359640\r\nAge: 0\r\nVia: 1.1 varnish (Varnish/7.0)\r\nConnection: keep-alive");
+   pstHTTP = ProcessHttpHeader("HTTP/1.1 404 Not Found\r\nDate: Thu, 04 Nov 2021 22:27:23 GMT\r\nServer: Apache\r\nContent-Length: 196\r\nLast-Modified: Wed, 21 Oct 2021 01:23:45 GMT\r\nContent-Type: text/html; charset=iso-8859-1\r\nX-Varnish: 976359640\r\nAge: 0\r\nVia: 1.1 varnish (Varnish/7.0)\r\nConnection: keep-alive");
 
-   printf("Content-Length:\t%d \t\t\t\t\t# fixed by swapping the pointer to the correct one\n", m->iContentLength);
-   printf("Http - code:  \t%d \t\t\t\t\t# got set to 200 in the if statement\n", m->iHttpCode);
-   printf("Last-Modified: \t%s \t\t# made as task wanted implementation of\n", m->szLastModified);
-   printf("Is success?: \t%d \t\t\t\t\t# used to always be Yes due to non strict comparitor. Which in c just updates the value to 200 then returns true\n", m->bIsSuccess);
-   printf("Content-Type: \t%s \t\t\t# used to always be 0, due to the wrong variable\n", m->szContentType);
-   printf("Server: \t%s \n", m->szServer);
+   printf("Content-Length:\t%d \t\t\t\t\t# fixed by swapping the pointer to the correct one\n", pstHTTP->iContentLength);
+   printf("Http - code:  \t%d \t\t\t\t\t# got set to 200 in the if statement\n", pstHTTP->iHttpCode);
+   printf("Last-Modified: \t%s \t\t# made as task wanted implementation of\n", pstHTTP->szLastModified);
+   printf("Is success?: \t%d \t\t\t\t\t# used to always be Yes due to non strict comparitor. Which in c just updates the value to 200 then returns true\n", pstHTTP->bIsSuccess);
+   printf("Content-Type: \t%s \t\t\t# used to always be 0, due to the wrong variable\n", pstHTTP->szContentType);
+   printf("Server: \t%s \n", pstHTTP->szServer);
 
-   free(m);
+   free(pstHTTP);
    return 0;
 }

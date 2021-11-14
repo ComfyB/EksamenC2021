@@ -22,8 +22,9 @@ int main(void)
     {
         // printf("main_threadId: %ld\n",syscall(SYS_gettid)); //to see which thread id we're in useful for debugging
 
-        if (fgets(structBuffer->input, 10, stdin))
-            ;                                       //take input
+        if (fgets(structBuffer->input, 10, stdin))  //take input 10 chars. the rest is buffered in terminal if theres more than 10 char. 
+            ;                                       //ends with newline
+            
         pthread_cond_signal(&read_data);            //sender signal for å kjøre while loopen en gang
         pthread_cond_wait(&write_data, &lock_data); //kjører whileloopeb når den får signal
     }
@@ -54,7 +55,7 @@ void *workThread(void *structPointer)
     while (strncmp(Buffer->input, "quit", 4)) // compare input with string, if it is quit we escaoe the while and exits the thread
     {
 
-        // printf("Thread_1_Id: %ld\n",syscall(SYS_gettid)); //to see which thread id we're in useful for debugging
+        // printf("work_thread_1s_Id: %ld\n",syscall(SYS_gettid)); //to see which thread id we're in useful for debugging
 
         FILE *outPut = fopen("outPut.txt", "a");
 
@@ -64,11 +65,14 @@ void *workThread(void *structPointer)
         //kjører whileloopen når den får signal
 
         pthread_mutex_trylock(&lock_data);
+
         pthread_cond_signal(&write_data);
         pthread_cond_wait(&read_data, &lock_data);
+
         pthread_mutex_unlock(&lock_data);
     }
     pthread_cond_signal(&write_data); //sends signal to main that it can continue to the join if its not there.
+    
     printf("\n--workThread is Ready to Join!--\n");
     pthread_exit(0);
 } // workthread()end
