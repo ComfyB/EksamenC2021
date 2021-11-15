@@ -1,5 +1,5 @@
-#ifndef _SOURCE_h
-#define _SOURCE_h
+#ifndef _OPG6_h
+#define _OPG6_h
 
 #include <stdio.h>
 #include <string.h>

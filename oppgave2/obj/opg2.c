@@ -1,12 +1,12 @@
-#include "source.h" //header with declaration of a letteroccurencecounter and the needed libraries
+#include "opg2.h" //header with declaration of a letteroccurencecounter and the needed libraries
 
 int main(void)
 {
     int ch, ch2;  //two ints that work as a buffer for the
     long decimal; //long to hold the two integer values after covertion to base 10 from b16
 
-    FILE *fptrIn = fopen("hexdec", "r");    //open file for reading
-    FILE *fptrOut = fopen("toascii", "rw"); //openfile for reading and writing
+    FILE *fptrIn = fopen("hexdec.txt", "r");    //open file for reading
+    FILE *fptrOut = fopen("toascii.txt", "rw"); //openfile for reading and writing
 
     if (fptrIn == NULL || fptrOut == NULL) //check if file is found and opened correctly
     {

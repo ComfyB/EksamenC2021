@@ -1,5 +1,5 @@
-#ifndef _SOURCE_h
-#define _SOURCE_h
+#ifndef _OPG2_h
+#define _OPG2_h
 //included headers:
 #include <stdio.h>
 #include <stdlib.h>

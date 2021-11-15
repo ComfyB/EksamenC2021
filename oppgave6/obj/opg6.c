@@ -1,11 +1,11 @@
-#include "source.h"
-int main(int argC, char* argV[])
+#include "opg6.h"
+
+int main(int argC, char *argV[])
 {
-    char* ip;
-    if (argC <0)
-        ip =  getIpaddr("eastwillsecurity.com");
-    else
-        ip= getIpaddr(argV[0]);
+    char *ip, *folderAndFile;
+    folderAndFile = ("/pg3401/test.html");
+    ip = getIpaddr("eastwillsecurity.com");
+
     int socketConnection, n, sendbytes;
     struct sockaddr_in serveraddress;
 
@@ -31,7 +31,7 @@ int main(int argC, char* argV[])
 
     printf("\nkoblet til to ip\n");
 
-    sprintf(sendBuffer, "GET /pg3401/test.html HTTP/1.1\r\nConnection: close\r\nHost: eastwillsecurity.com\r\n\r\n"); //writes the header into sendbuffer
+    sprintf(sendBuffer, "GET %s HTTP/1.1\r\nConnection: close\r\nHost: eastwillsecurity.com\r\n\r\n", folderAndFile); //writes the header into sendbuffer
     sendbytes = strlen(sendBuffer);
 
     if (write(socketConnection, sendBuffer, sendbytes) != sendbytes) //writes through the socket a get req to the server.
@@ -59,10 +59,11 @@ int errorMsg(char *error)
     return 1;
 } //errorMsg() end
 
-char* getIpaddr(char* url){
+char *getIpaddr(char *url)
+{
     int i;
-    struct hostent *add = gethostbyname("eastwillsecurity.com"); //get host by name, will return a struct with addr list  "database entry of a host"
-    struct in_addr **addr_list;                                  //Make address into network byte order by combining NET with host local addr.
+    struct hostent *add = gethostbyname(url); //get host by name, will return a struct with addr list  "database entry of a host"
+    struct in_addr **addr_list;               //Make address into network byte order by combining NET with host local addr.
     char *ip = malloc(sizeof(int *) * 33);
 
     if (add)
@@ -80,5 +81,5 @@ char* getIpaddr(char* url){
         strcpy(ip, SERVERIP);
         printf("ip not found, defaulting to hardcoded ip.");
     } //end of the part used to get ip from host.
-return ip;
+    return ip;
 }

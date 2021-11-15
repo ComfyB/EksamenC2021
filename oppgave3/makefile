@@ -2,21 +2,21 @@
 
 INCLDIR = ./include
 CC = gcc
-CFLAGS = -O2 -g
+CFLAGS = -O2 
 CFLAGS += -I $(INCLDIR)
 
 OBJDIR = obj
 
-_DEPS = source.h
+_DEPS = opg3.h
 DEPS = $(patsubst %,$(INCLDIR)/%,$(_DEPS))
 
-_OBJS = source.o
+_OBJS = opg3.o
 OBJS = $(patsubst %, $(OBJDIR)/%, $(_OBJS))
 
 $(OBJDIR)/%.o: %.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
-SOURCE: $(OBJS)
+OPG3: $(OBJS)
 	$(CC) -o $@ $^ $(CFLAGS)
 
 .PHONY: clean

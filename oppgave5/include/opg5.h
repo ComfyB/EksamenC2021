@@ -1,5 +1,5 @@
-#ifndef _SOURCE_h
-#define _SOURCE_h
+#ifndef _OPG5_h
+#define _OPG5_h
 
 
 #include <stdio.h>

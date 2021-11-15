@@ -1,4 +1,3 @@
-# Makefile template
 
 INCLDIR = ./include
 CC = gcc
@@ -7,16 +6,16 @@ CFLAGS += -I $(INCLDIR)
 
 OBJDIR = obj
 
-_DEPS = source.h
+_DEPS = opg2.h
 DEPS = $(patsubst %,$(INCLDIR)/%,$(_DEPS))
 
-_OBJS = source.o
+_OBJS = opg2.o
 OBJS = $(patsubst %, $(OBJDIR)/%, $(_OBJS))
 
 $(OBJDIR)/%.o: %.c $(DEPS)
 	$(CC) -c -o $@ $< $(CFLAGS)
 
-SOURCE: $(OBJS)
+OPG2: $(OBJS)
 	$(CC) -o $@ $^ $(CFLAGS) -lm
 
 .PHONY: clean

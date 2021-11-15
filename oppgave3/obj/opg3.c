@@ -1,4 +1,4 @@
-#include "source.h"
+#include "opg3.h"
 
 int main(void)
 {
@@ -124,7 +124,7 @@ void printList(DLL *list)
 {
     Node *i;
     printf("*********************************\n");
-    printf("navn\tpris\tQUANTITY\tvaretotal\n");
+    printf("navn\tpris\tantall\tvaretotal\n");
     printf("_________________________________\n\n");
 
     for (i = list->head; i != NULL; i = i->NEXT)

@@ -1,5 +1,5 @@
-#ifndef _SOURCE_h
-#define _SOURCE_h
+#ifndef _OPG3_h
+#define _OPG3_h
 
 //included libraries
 #include <stdio.h>
