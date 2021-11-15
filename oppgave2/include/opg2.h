@@ -6,6 +6,6 @@
 #include <string.h>
 #include <ctype.h>
 //declearing functions:
-void letterOccurenceCounter(FILE *in);
+void letterOccurenceCounter();
 
 #endif

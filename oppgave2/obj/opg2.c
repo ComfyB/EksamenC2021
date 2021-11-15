@@ -6,7 +6,7 @@ int main(void)
     long decimal; //long to hold the two integer values after covertion to base 10 from b16
 
     FILE *fptrIn = fopen("hexdec.txt", "r");    //open file for reading
-    FILE *fptrOut = fopen("toascii.txt", "rw"); //openfile for reading and writing
+    FILE *fptrOut = fopen("toascii.txt", "w"); //openfile for writing
 
     if (fptrIn == NULL || fptrOut == NULL) //check if file is found and opened correctly
     {
@@ -22,27 +22,29 @@ int main(void)
         fputc(decimal, fptrOut);    // writes the cast character to output file
         printf("%c", (int)decimal); //prints the character in terminal.  casted to int as char are ints in c.
     }
-    letterOccurenceCounter(fptrOut); //run the program for counting. Could have been written so it counted every char while running the while loop earlier
                                      //but the task was ambigious. I chose to intepret that it was supposed to do it after the main function .
 
     fclose(fptrIn);  //
     fclose(fptrOut); // close both files
+    letterOccurenceCounter(); //run the program for counting. 
 
     return 0;
 }
-void letterOccurenceCounter(FILE *in) //passing the pointer to the fopen in line 9
+void letterOccurenceCounter() //passing the pointer to the fopen in line 9
 {
+    FILE *fptrIn = fopen("toascii.txt", "r"); //openfile for reading 
+
     int c, tmp,                          //temp int for characterinput
         i, character;                    // i for the while loop later. character to have a modifiable value for the function that prints the letters.
     int counter[27];                     //counter array.
     memset(counter, 0, sizeof(counter)); //clear the memory since we are using += later. fixses some troubles where mem is not clear
     printf("\n");
-    if (in == NULL) //exit if pointer isn't passed.
+    if (fptrIn == NULL) //exit if pointer isn't passed.
     {
         printf("File Not found");
         exit(1);
     }
-    while ((c = fgetc(in)) != EOF) //get character by character
+    while ((c = fgetc(fptrIn)) != EOF) //get character by character
     {
         tmp = toupper(c);          //convert and tmp save the character in uppercase.
         tmp = tmp - 'A';           //take the tmp and decrement value with A (65)
@@ -58,4 +60,5 @@ void letterOccurenceCounter(FILE *in) //passing the pointer to the fopen in line
         printf("%c = ", character + 'B');
         printf("%d\n", counter[i + 1]);
     }
+    fclose(fptrIn);
 }
