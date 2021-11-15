@@ -1,28 +1,11 @@
 #include "source.h"
-
-int main(void)
+int main(int argC, char* argV[])
 {
-    int i;
-    struct hostent *add = gethostbyname("eastwillsecurity.com"); //get host by name, will return a struct with addr list  "database entry of a host"
-    struct in_addr **addr_list;                                  //Make address into network byte order by combining NET with host local addr.
-    char *ip = malloc(sizeof(char *) * 33);
-
-    if (add)
-    {
-        addr_list = (struct in_addr **)add->h_addr_list; //h_addr_list gives a alist of returned host values
-
-        for (i = 0; addr_list[i] != NULL; i++)
-        {
-            strcpy(ip, inet_ntoa(*addr_list[i])); //inet_ntoa converts ip to string and strcpy copies it into a variable called ip.
-            printf("ip found: %s", ip);
-        }
-    }
-    else //if hosts is not found we go to a hardcoded ip to the server.
-    {
-        strcpy(ip, SERVERIP);
-        printf("ip not found, defaulting to hardcoded ip.");
-    } //end of the part used to get ip from host.
-
+    char* ip;
+    if (argC <0)
+        ip =  getIpaddr("eastwillsecurity.com");
+    else
+        ip= getIpaddr(argV[0]);
     int socketConnection, n, sendbytes;
     struct sockaddr_in serveraddress;
 
@@ -75,3 +58,27 @@ int errorMsg(char *error)
     printf("%s\n", error);
     return 1;
 } //errorMsg() end
+
+char* getIpaddr(char* url){
+    int i;
+    struct hostent *add = gethostbyname("eastwillsecurity.com"); //get host by name, will return a struct with addr list  "database entry of a host"
+    struct in_addr **addr_list;                                  //Make address into network byte order by combining NET with host local addr.
+    char *ip = malloc(sizeof(int *) * 33);
+
+    if (add)
+    {
+        addr_list = (struct in_addr **)add->h_addr_list; //h_addr_list gives a alist of returned host values
+
+        for (i = 0; addr_list[i] != NULL; i++)
+        {
+            strcpy(ip, inet_ntoa(*addr_list[i])); //inet_ntoa converts ip to string and strcpy copies it into a variable called ip.
+            printf("ip found: %s", ip);
+        }
+    }
+    else //if hosts is not found we go to a hardcoded ip to the server.
+    {
+        strcpy(ip, SERVERIP);
+        printf("ip not found, defaulting to hardcoded ip.");
+    } //end of the part used to get ip from host.
+return ip;
+}

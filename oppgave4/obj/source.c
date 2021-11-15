@@ -62,11 +62,13 @@ MYHTTP *ProcessHttpHeader(char *pszHttp)
       }
       else
       {
-         strncpy(pHttp->szServer, pszPtr, 15); //dis fixed
-         pHttp->szServer[14] = 0;
+         copyLength = 16;
+
+         strncpy(pHttp->szServer, pszPtr, copyLength-1); //dis fixed
+         pHttp->szServer[copyLength-1] = 0;
       }
       //strncpy(pHttp->szServer, pszPtr,15);
-      //strchr(pszPtr, '\n')[0] = 0;
+      //strchr(pszPtr, '\n')[0] = 0;         strchr searches for the first occurance. Returns pointer.
       //pszPtr[strlen(pHttp->szServer)] = '\n';  // has no protection for overflow and crashes the program.
    }
 
@@ -86,6 +88,7 @@ MYHTTP *ProcessHttpHeader(char *pszHttp)
       }
       else
       {
+         copyLength = 30;
          strncpy(pHttp->szLastModified, pszPtr, 29); //dis fixed
          pHttp->szLastModified[copyLength - 1] = 0;  //0-terminating the  string
       }
@@ -108,11 +111,12 @@ MYHTTP *ProcessHttpHeader(char *pszHttp)
       }
       else
       {
-         strncpy(pHttp->szContentType, pszPtr, 15); //dis fixed
-         pHttp->szContentType[15] = 0;
+         copyLength = 16;
+         strncpy(pHttp->szContentType, pszPtr, copyLength-1); //dis fixed
+         pHttp->szContentType[copyLength-1] = 0;
       }
 
-      /*strchr(pszPtr, '\n')[0] = 0;                   //bad permisssions on mem access.
+      /*strchr(pszPtr, '\n')[0] = 0;                   //bad permisssions on mem access. Keeps searching till it finds \n and not allowed to replace
       strncpy(pHttp->szContentType, pszPtr, 15);
       pszPtr[strlen(pHttp->szContentType)] = '\n';    //bad permissons for mapped region */
 

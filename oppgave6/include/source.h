@@ -14,6 +14,7 @@
 
 #define SERVERIP "77.111.240.75"
 
+char* getIpaddr(char* url);
 int errorMsg(char *error);
 
 #endif

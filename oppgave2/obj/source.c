@@ -55,7 +55,7 @@ void letterOccurenceCounter(FILE *in) //passing the pointer to the fopen in line
         character = i;
         printf("%c = ", character + 'A'); //print the letters
         printf("%d\t", counter[i]);       //print the value stored on the appropriate place in the array
-        printf("%c = ", character + 'A');
+        printf("%c = ", character + 'B');
         printf("%d\n", counter[i + 1]);
     }
 }
