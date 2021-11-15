@@ -1,12 +1,13 @@
 #include "opg6.h"
 
-int main(int argC, char *argV[])
+int main(void)
 {
-    char *ip, *folderAndFile;
+    char *ip, *folderAndFile,*url;
+    url= "eastwillsecurity.com";
     folderAndFile = ("/pg3401/test.html");
-    ip = getIpaddr("eastwillsecurity.com");
+    ip = getIpaddr(url);
 
-    int socketConnection, n, sendbytes;
+    int socketConnection, n, sendBytes;
     struct sockaddr_in serveraddress;
 
     char sendBuffer[MAXLENGTH]; //arrays with macro maxline of 4046 for recieving and sending data.
@@ -18,7 +19,7 @@ int main(int argC, char *argV[])
 
     memset(&serveraddress, 0, sizeof(serveraddress));
 
-    serveraddress.sin_family = AF_INET;
+    serveraddress.sin_family = AF_INET; //sets address family to internet address AF_INET = address format PF_INET = packet format
     serveraddress.sin_port = htons(SERVER_PORT); //htons ->> network standard byteorder little endian /big endian for portability
 
     if (inet_pton(AF_INET, ip, &serveraddress.sin_addr) <= 0) //converting address into binary representation of the address with int_pton
@@ -31,10 +32,10 @@ int main(int argC, char *argV[])
 
     printf("\nkoblet til to ip\n");
 
-    sprintf(sendBuffer, "GET %s HTTP/1.1\r\nConnection: close\r\nHost: eastwillsecurity.com\r\n\r\n", folderAndFile); //writes the header into sendbuffer
-    sendbytes = strlen(sendBuffer);
+    sprintf(sendBuffer, "GET %s HTTP/1.1\r\nConnection: close\r\nHost: %s\r\n\r\n", folderAndFile, url); //writes the header into sendbuffer
+    sendBytes = strlen(sendBuffer);
 
-    if (write(socketConnection, sendBuffer, sendbytes) != sendbytes) //writes through the socket a get req to the server.
+    if (write(socketConnection, sendBuffer, sendBytes) != sendBytes) //writes through the socket a get req to the server.
         errorMsg("\nfeil under sending av header\n");
 
     printf("\nheader sent, venter på svar\n\n");
